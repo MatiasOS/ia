@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm build)",
+      "Bash(pnpm test)",
+      "Bash(pnpm typecheck)",
+      "Bash(pnpm format:fix)",
+      "Bash(pnpm lint:fix)",
+      "Bash(pnpm check)",
+      "Bash(pnpm --filter *)",
+      "Bash(turbo run *)",
+      "Bash(tsx --test *)",
+      "Bash(git status*)",
+      "Bash(git log*)",
+      "Bash(git diff*)",
+      "Bash(git branch*)",
+      "Bash(git show*)"
+    ]
+  }
+}

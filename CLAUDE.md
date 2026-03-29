@@ -49,6 +49,23 @@ pnpm test
 
 - All blockchain data comes from on-chain RPC calls (no indexing APIs)
 - Algorithms use `ClientFactory.createClient()` from `@openscan/network-connectors`
+- `@openscan/network-connectors` is always a **peer dependency** imported dynamically (`await import("@openscan/network-connectors")`) — never a direct production dependency
 - LangChain tools wrap algorithms/utils DIRECTLY (not through CLI)
 - OpenClaw adapter goes through CLI command handlers
 - Skills are `.md` files (not TypeScript) following skills.sh format
+- Each package has its own `CLAUDE.md` with package-specific instructions
+
+## Per-Package Operations
+
+```bash
+pnpm --filter @openscan/utils test
+pnpm --filter @openscan/algorithms build
+pnpm --filter @openscan/cli typecheck
+```
+
+## Custom Commands
+
+- `/add-algorithm` — Scaffold a new algorithm in `@openscan/algorithms`
+- `/add-cli-command` — Scaffold a new CLI command in `@openscan/cli`
+- `/add-langchain-tool` — Scaffold a new LangChain tool wrapper
+- `/check-all` — Run full validation suite (format, lint, typecheck, test)
