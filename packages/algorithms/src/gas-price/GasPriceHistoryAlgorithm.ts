@@ -9,10 +9,19 @@ import type {
 } from "../shared/types.js";
 
 const SUPPORTED_CHAINS = [1, 10, 56, 137, 8453, 42161, 43114, 31337, 11155111];
+const DEFAULT_TARGET_DISTANCE = 1000;
+
+interface BlockHeader {
+  number: string;
+  timestamp: string;
+  baseFeePerGas?: string;
+  gasUsed: string;
+  gasLimit: string;
+}
 
 export class GasPriceHistoryAlgorithm implements Algorithm<GasPriceParams, GasPricePage> {
   readonly name = "gas-price-history";
-  readonly description = "Retrieve gas price history using eth_feeHistory";
+  readonly description = "Retrieve gas price history using exponential block sampling";
   readonly supportedChains = SUPPORTED_CHAINS;
 
   async execute(params: GasPriceParams): Promise<AlgorithmResult<GasPricePage>> {
@@ -32,50 +41,79 @@ export class GasPriceHistoryAlgorithm implements Algorithm<GasPriceParams, GasPr
     );
 
     try {
-      const blockCount = params.pagination?.pageSize ?? 100;
-      const newestBlock = params.pagination?.toBlock ?? "latest";
-
-      const feeResult = await client.execute<{
-        baseFeePerGas: string[];
-        gasUsedRatio: number[];
-        oldestBlock: string;
-      }>("eth_feeHistory", [
-        `0x${blockCount.toString(16)}`,
-        typeof newestBlock === "number" ? `0x${newestBlock.toString(16)}` : newestBlock,
-        [25, 50, 75],
-      ]);
+      // 1. Get current block number
+      const blockNumResult = await client.execute<string>("eth_blockNumber", []);
       rpcCalls++;
 
-      if (!feeResult.success || !feeResult.data) {
+      if (!blockNumResult.success || !blockNumResult.data) {
         return {
           success: false,
           error: {
             code: "RPC_ERROR",
-            message: feeResult.errors?.[0]?.error ?? "eth_feeHistory failed",
+            message: blockNumResult.errors?.[0]?.error ?? "eth_blockNumber failed",
           },
         };
       }
 
-      const { baseFeePerGas, gasUsedRatio, oldestBlock } = feeResult.data;
-      const startBlock = Number(hexToNumber(oldestBlock));
+      const currentBlock = Number(hexToNumber(blockNumResult.data));
 
-      const entries: GasPriceEntry[] = baseFeePerGas.slice(0, -1).map((baseFee, i) => ({
-        blockNumber: startBlock + i,
-        timestamp: 0,
-        baseFee,
-        avgGasPrice: weiToGwei(baseFee),
-        minGasPrice: weiToGwei(baseFee),
-        maxGasPrice: weiToGwei(baseFee),
-        gasUsedRatio: gasUsedRatio[i] ?? 0,
-      }));
+      // 2. Resolve target block
+      let targetBlock: number;
+      if (params.targetBlock != null) {
+        targetBlock =
+          typeof params.targetBlock === "string"
+            ? Number(hexToNumber(params.targetBlock))
+            : params.targetBlock;
+      } else {
+        targetBlock = Math.max(0, currentBlock - DEFAULT_TARGET_DISTANCE);
+      }
+
+      // 3. Generate exponential sample points
+      const sampleBlocks: number[] = [];
+      let offset = 1;
+      while (currentBlock - offset >= targetBlock) {
+        sampleBlocks.push(currentBlock - offset);
+        offset *= 2;
+      }
+      // Always include the target block itself
+      if (sampleBlocks.length === 0 || sampleBlocks[sampleBlocks.length - 1] !== targetBlock) {
+        sampleBlocks.push(targetBlock);
+      }
+
+      // 4. Fetch block headers for each sample point
+      const entries: GasPriceEntry[] = [];
+
+      for (const blockNum of sampleBlocks) {
+        const blockResult = await client.execute<BlockHeader>(
+          "eth_getBlockByNumber",
+          [`0x${blockNum.toString(16)}`, false],
+        );
+        rpcCalls++;
+
+        if (!blockResult.success || !blockResult.data) {
+          continue;
+        }
+
+        const block = blockResult.data;
+        const gasUsed = Number(hexToNumber(block.gasUsed));
+        const gasLimit = Number(hexToNumber(block.gasLimit));
+        const gasUsedRatio = gasLimit > 0 ? gasUsed / gasLimit : 0;
+        const baseFee = block.baseFeePerGas ?? "0x0";
+
+        entries.push({
+          blockNumber: blockNum,
+          timestamp: Number(hexToNumber(block.timestamp)),
+          baseFee,
+          avgGasPrice: weiToGwei(baseFee),
+          minGasPrice: weiToGwei(baseFee),
+          maxGasPrice: weiToGwei(baseFee),
+          gasUsedRatio,
+        });
+      }
 
       return {
         success: true,
         data: { entries, chainId: params.chainId },
-        pagination: {
-          hasMore: startBlock > 0,
-          nextCursor: startBlock > 0 ? String(startBlock - 1) : undefined,
-        },
         metadata: {
           chainId: params.chainId,
           duration: Date.now() - startTime,

@@ -81,6 +81,7 @@ export interface TokenBalancePage {
 
 /** Gas Price History */
 export interface GasPriceParams extends AlgorithmParams {
+  targetBlock?: number | string;
   pagination?: PaginationParams;
   granularity?: "block" | "hour" | "day";
 }

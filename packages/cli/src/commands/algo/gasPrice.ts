@@ -7,10 +7,7 @@ const handler: CommandHandler = async (args, ctx) => {
     chainId: ctx.chainId,
     rpcUrls: ctx.rpcUrls,
     strategyType: ctx.strategyType,
-    pagination: {
-      toBlock: args["to-block"] as string | undefined,
-      pageSize: args["page-size"] as number | undefined,
-    },
+    targetBlock: args["target-block"] as number | undefined,
     granularity: args.granularity as "block" | "hour" | "day" | undefined,
   });
 
@@ -27,8 +24,7 @@ export const gasPriceCommand: CommandDefinition = {
   description: "Get gas price history for a network",
   args: [],
   flags: [
-    { name: "to-block", description: "End block", type: "string" },
-    { name: "page-size", description: "Number of blocks to query", type: "number", default: 100 },
+    { name: "target-block", description: "Block number to sample back to", type: "number" },
     { name: "granularity", description: "Data granularity: block, hour, day", type: "string", default: "block" },
   ],
   handler,
