@@ -47,6 +47,7 @@ export interface TxHistoryEntry {
   gasUsed: string;
   gasPrice: string;
   status: "success" | "failure";
+  type: "sent" | "received" | "internal";
   methodId?: string;
   decodedMethod?: string;
 }
@@ -55,6 +56,40 @@ export interface TxHistoryPage {
   entries: TxHistoryEntry[];
   address: string;
   chainId: number | string;
+}
+
+export interface TxSearchProgress {
+  phase: "searching" | "fetching";
+  current: number;
+  total: number;
+  message?: string;
+  blockRange?: { from: number; to: number };
+}
+
+export type TxSearchProgressCallback = (progress: TxSearchProgress) => void;
+export type TxSearchTransactionFoundCallback = (entries: TxHistoryEntry[]) => void;
+
+export interface TxSearchOptions {
+  limit?: number;
+  fromBlock?: number;
+  toBlock?: number;
+  onProgress?: TxSearchProgressCallback;
+  onTransactionsFound?: TxSearchTransactionFoundCallback;
+  signal?: AbortSignal;
+}
+
+export interface TxSearchResult {
+  blocks: number[];
+  entries: TxHistoryEntry[];
+  stats: {
+    totalBlocks: number;
+    totalTxs: number;
+    sentCount: number;
+    receivedCount: number;
+    internalCount: number;
+    rpcCalls: number;
+    elapsedMs: number;
+  };
 }
 
 /** Token Balance History */
