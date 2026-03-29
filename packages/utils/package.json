@@ -1,0 +1,36 @@
+{
+  "name": "@openscan/utils",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsx --test tests/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@openscan/tsconfig": "workspace:*",
+    "@types/node": "^24.10.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@openscan/network-connectors": "^1.7.0"
+  },
+  "peerDependenciesMeta": {
+    "@openscan/network-connectors": {
+      "optional": true
+    }
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  }
+}
