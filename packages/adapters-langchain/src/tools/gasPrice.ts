@@ -1,13 +1,15 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { GasPriceHistoryAlgorithm } from "@openscan/algorithms";
+import { resolveRpcUrls } from "../rpc.js";
 
 export const getGasPriceHistory = tool(
-  async ({ chainId, rpcUrls, targetBlock }) => {
+  async ({ chainId, rpcUrls, alchemyKey, targetBlock }) => {
+    const resolvedRpcUrls = rpcUrls ?? resolveRpcUrls({ chainId, alchemyKey });
     const algo = new GasPriceHistoryAlgorithm();
     const result = await algo.execute({
       chainId,
-      rpcUrls,
+      rpcUrls: resolvedRpcUrls,
       targetBlock,
     });
 
@@ -22,7 +24,11 @@ export const getGasPriceHistory = tool(
       "Get gas price history for a network by sampling blocks exponentially from latest to a target block",
     schema: z.object({
       chainId: z.number().describe("EVM chain ID"),
-      rpcUrls: z.array(z.string()).describe("RPC endpoint URLs"),
+      rpcUrls: z
+        .array(z.string())
+        .optional()
+        .describe("RPC endpoint URLs (auto-resolved from public RPCs if omitted)"),
+      alchemyKey: z.string().optional().describe("Alchemy API key for premium RPC access"),
       targetBlock: z
         .number()
         .optional()

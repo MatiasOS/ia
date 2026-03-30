@@ -2,19 +2,21 @@ import { tool } from "@langchain/core/tools";
 import { z } from "zod";
 import { TransactionHistoryAlgorithm } from "@openscan/algorithms";
 import { validateAddress } from "@openscan/utils";
+import { resolveRpcUrls } from "../rpc.js";
 
 export const getTransactionHistory = tool(
-  async ({ address, chainId, rpcUrls, pageSize }) => {
+  async ({ address, chainId, rpcUrls, alchemyKey, pageSize }) => {
     const addrInfo = validateAddress(address);
     if (!addrInfo.isValid) {
       return `Invalid address: ${address}`;
     }
 
+    const resolvedRpcUrls = rpcUrls ?? resolveRpcUrls({ chainId, alchemyKey });
     const algo = new TransactionHistoryAlgorithm();
     const result = await algo.execute({
       address,
       chainId,
-      rpcUrls,
+      rpcUrls: resolvedRpcUrls,
       pagination: { pageSize },
     });
 
@@ -30,7 +32,11 @@ export const getTransactionHistory = tool(
     schema: z.object({
       address: z.string().describe("The blockchain address to look up"),
       chainId: z.number().describe("EVM chain ID (1=Ethereum, 137=Polygon, etc.)"),
-      rpcUrls: z.array(z.string()).describe("RPC endpoint URLs for the chain"),
+      rpcUrls: z
+        .array(z.string())
+        .optional()
+        .describe("RPC endpoint URLs (auto-resolved from public RPCs if omitted)"),
+      alchemyKey: z.string().optional().describe("Alchemy API key for premium RPC access"),
       pageSize: z.number().optional().default(50).describe("Max results per page"),
     }),
   },
