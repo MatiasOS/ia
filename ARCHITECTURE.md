@@ -610,7 +610,7 @@ export interface OpenClawToolAdapter {
 - **Format**: Markdown-based (skills.sh / agentskills.io format)
 - **No TypeScript dependencies** — skills are `.md` files with frontmatter
 - **Prerequisite**: `@openscan/cli` must be installed (skills instruct agents to invoke CLI commands)
-- **Installation**: `npx skills add openscan/ia --skill blockchain-exploration`
+- **Installation**: `npx skills add openscan-explorer/ia --skill blockchain-exploration`
 - **Skills**: `blockchain-exploration` (covers tx history, gas analysis, token tracking, address profiling as rules)
 
 ### 8.5 Adapter Packages
@@ -1143,7 +1143,7 @@ pnpm changeset publish
 ### Step 5: Skills.sh Registration
 Skills are published as a GitHub repository. Users install via:
 ```bash
-npx skills add MatiasOS/ia --skill blockchain-exploration
+npx skills add openscan-explorer/ia --skill blockchain-exploration
 ```
 This copies the SKILL.md and rules/ into the user's project, making the procedural knowledge available to their AI agent (Claude Code, Cursor, etc.). The skill appears on the skills.sh leaderboard automatically once users start installing it.
 
@@ -1209,7 +1209,7 @@ Build manifest via `buildOpenClawManifest()` and register with OpenClaw runtime.
    - Write SKILL.md with frontmatter for `blockchain-exploration`
    - Individual rule files: tx-history, gas-analysis, token-balance, address-profiling
    - metadata.json and build script for AGENTS.md compilation
-   - README with installation instructions (`npx skills add MatiasOS/ia --skill blockchain-exploration`)
+   - README with installation instructions (`npx skills add openscan-explorer/ia --skill blockchain-exploration`)
 
 ### Phase 3: Framework Adapters (Week 6)
 
