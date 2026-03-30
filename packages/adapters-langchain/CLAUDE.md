@@ -9,11 +9,13 @@ LangChain tools wrap `@openscan/algorithms` and `@openscan/utils` **DIRECTLY** â
 ```typescript
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
+import { resolveRpcUrls } from "../rpc.js";
 
 export const getFoo = tool(
-  async ({ chainId, rpcUrls, address }) => {
+  async ({ chainId, rpcUrls, alchemyKey, address }) => {
+    const resolvedRpcUrls = rpcUrls ?? resolveRpcUrls({ chainId, alchemyKey });
     const algo = new FooAlgorithm();
-    const result = await algo.execute({ chainId, rpcUrls, address });
+    const result = await algo.execute({ chainId, rpcUrls: resolvedRpcUrls, address });
     if (!result.success) return `Error: ${result.error?.message ?? "Unknown error"}`;
     return JSON.stringify(result.data, null, 2);
   },
@@ -22,12 +24,19 @@ export const getFoo = tool(
     description: "...",                 // Clear description for LLM consumption
     schema: z.object({
       chainId: z.number().describe("EVM chain ID"),
-      rpcUrls: z.array(z.string()).describe("RPC endpoint URLs"),
+      rpcUrls: z.array(z.string()).optional().describe("RPC endpoint URLs (auto-resolved if omitted)"),
+      alchemyKey: z.string().optional().describe("Alchemy API key for premium RPC access"),
       address: z.string().describe("Ethereum address"),
     }),
   },
 );
 ```
+
+## RPC Resolution
+
+- `rpcUrls` is **optional** in all tool schemas. When omitted, RPCs are auto-resolved from `@openscan/metadata`.
+- `alchemyKey` is optional â€” adds a premium Alchemy endpoint as the first fallback URL.
+- Resolution logic lives in `src/rpc.ts` (local copy, not imported from CLI, to preserve the architecture where LangChain wraps algorithms directly).
 
 ## Key Rules
 

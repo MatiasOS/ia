@@ -1,6 +1,6 @@
 # OpenScan AI - Claude Code Instructions
 
-OpenScan AI is a modular, TypeScript-first system for on-chain blockchain analysis. It provides algorithms, utilities, a CLI, skills (for AI agents), and framework adapters (LangChain, OpenClaw) built on top of `@openscan/network-connectors`.
+OpenScan AI is a modular, TypeScript-first system for on-chain blockchain analysis. It provides algorithms, utilities, a CLI, skills (for AI agents), and framework adapters (LangChain, OpenClaw) built on top of `@openscan/network-connectors` and `@openscan/metadata`.
 
 ## Quick Reference
 
@@ -50,6 +50,8 @@ pnpm test
 - All blockchain data comes from on-chain RPC calls (no indexing APIs)
 - Algorithms use `ClientFactory.createClient()` from `@openscan/network-connectors`
 - `@openscan/network-connectors` is always a **peer dependency** imported dynamically (`await import("@openscan/network-connectors")`) — never a direct production dependency
+- `@openscan/metadata` is a JSON data source providing public RPC endpoints per chain — consumed by CLI and LangChain adapter to auto-resolve RPCs when `--rpc` is omitted
+- RPC URLs are auto-resolved from `@openscan/metadata` when not explicitly provided; `--alchemy-key` (or `ALCHEMY_API_KEY` env var) adds a premium Alchemy endpoint as the primary fallback
 - LangChain tools wrap algorithms/utils DIRECTLY (not through CLI)
 - OpenClaw adapter goes through CLI command handlers
 - Skills are `.md` files (not TypeScript) following skills.sh format

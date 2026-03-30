@@ -29,6 +29,12 @@ Defined in `src/types.ts`:
 - `SkillRegistration` — points to SKILL.md path
 - `ToolRegistration` — tool with name, description, schema, execute function
 
+## RPC Resolution
+
+- `buildOpenClawManifest` auto-resolves RPCs via `resolveRpcUrls` from `@openscan/cli` when `rpcUrls` is empty or missing.
+- `alchemyKey` is an optional tool parameter — adds a premium Alchemy endpoint. Also checks `ALCHEMY_API_KEY` env var.
+- All generated tool schemas include optional `rpcUrls` and `alchemyKey` properties.
+
 ## No Direct network-connectors Dependency
 
 This package only depends on `@openscan/cli`, which handles the network connector peer dependency chain.

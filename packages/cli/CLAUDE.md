@@ -30,6 +30,14 @@ export { handler as fooHandler };
 - **Dual entry**: `bin.ts` for CLI usage, `index.ts` for programmatic imports.
 - **Handler barrel**: All handlers are re-exported from `src/handlers/index.ts` for the OpenClaw adapter.
 
+## RPC Resolution
+
+- `--rpc` is **optional**. If omitted, public RPCs are auto-resolved from `@openscan/metadata` for the given chain.
+- `--alchemy-key` (or `ALCHEMY_API_KEY` env var) adds a premium Alchemy endpoint as the first fallback URL.
+- If `--rpc` is provided, it takes precedence (no auto-resolution).
+- Resolution logic lives in `src/rpc/resolve.ts` and is exported from `index.ts` for use by adapters.
+- `CommandContext.rpcUrls` is always populated by the resolver before reaching handlers.
+
 ## Directory Structure
 
 ```
@@ -43,8 +51,11 @@ src/
 │   └── util/{command}.ts           # Utility commands
 ├── handlers/
 │   └── index.ts                    # Handler barrel export
-└── output/
-    └── formatters.ts               # JSON, table, stream formatters
+├── output/
+│   └── formatters.ts               # JSON, table, stream formatters
+└── rpc/
+    ├── index.ts                    # Barrel export
+    └── resolve.ts                  # resolveRpcUrls, getAlchemyUrl
 ```
 
 ## Adding a New Command

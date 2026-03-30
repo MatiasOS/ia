@@ -24,6 +24,8 @@ Each rule in `rules/` is a Markdown file with:
 - YAML frontmatter: `title`, `impact` (HIGH/MEDIUM/LOW), `tags`
 - Markdown body: when to use, bash command examples, important notes
 - References `@openscan/cli` commands by name (e.g., `openscan algo:tx-history`)
+- `--rpc` is **optional** in examples — public RPCs are auto-resolved from `@openscan/metadata`
+- Show simplest usage first (no `--rpc`), then `--alchemy-key`, then explicit `--rpc` as advanced
 
 ## Adding a New Skill Rule
 
