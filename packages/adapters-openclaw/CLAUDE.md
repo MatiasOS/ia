@@ -38,3 +38,43 @@ Defined in `src/types.ts`:
 ## No Direct network-connectors Dependency
 
 This package only depends on `@openscan/cli`, which handles the network connector peer dependency chain.
+
+## Adding a New Tool
+
+Tools are **auto-generated** from CLI commands — when a new command is registered in `@openscan/cli` and passed to `buildOpenClawManifest(commands)`, it automatically becomes an OpenClaw tool. No new file is needed in this package.
+
+To add a new tool:
+
+1. **Add the CLI command first** — use `/add-cli-command` to create the command in `@openscan/cli`
+2. **Pass it to `buildOpenClawManifest()`** — the caller must include the new command in the `commands` array. The manifest builder auto-generates:
+   - JSON Schema from the command's `args` and `flags`
+   - An `execute()` wrapper that calls the command handler with a synthetic `CommandContext`
+   - Optional `rpcUrls` and `alchemyKey` fields in the schema
+
+No changes to this package are needed for new tools.
+
+## Adding a New Capability or Skill
+
+When the project gains a new category of functionality (not just a new command within an existing category), update `buildOpenClawManifest()` in `src/index.ts`:
+
+**New capability** — add to the `capabilities` array:
+
+```typescript
+{
+  name: "new-capability",
+  description: "What this capability provides",
+  chains: [1, 10, 56, 137, 8453, 42161, 43114],
+}
+```
+
+**New skill** — add to the `skills` array:
+
+```typescript
+{
+  name: "skill-name",
+  description: "What this skill provides",
+  skillPath: "./skills/{skill-name}/SKILL.md",
+}
+```
+
+**Verify**: `pnpm --filter @openscan/adapters-openclaw typecheck`

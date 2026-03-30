@@ -42,9 +42,40 @@ src/
 
 ## Adding a New Utility Domain
 
-1. Create `src/{domain}/index.ts`
-2. Export public API from `src/index.ts`
-3. Add `tests/{domain}.test.ts`
+1. **Create the domain directory and barrel file** at `src/{domain}/index.ts`:
+   - Directory name: kebab-case (e.g., `merkle-tree`)
+   - Function names: camelCase (e.g., `computeMerkleRoot`)
+   - Use `bigint` for all blockchain numeric values — never `Number`
+   - Do NOT add any production dependencies — only `devDependencies` and optional `peerDependencies` are allowed
+
+2. **Define shared types** (if needed):
+   - Types consumed by other packages → add to `src/types.ts` (e.g., `MerkleProof`)
+   - Types internal to this domain → export directly from `src/{domain}/index.ts`
+
+3. **Export the public API from `src/index.ts`**:
+   ```typescript
+   export { computeMerkleRoot, verifyProof } from "./{domain}/index.js";
+   export type { MerkleProof } from "./{domain}/index.js";
+   ```
+   - Use `.js` extension in all import paths (ESM)
+   - Export functions and types separately
+
+4. **Add tests** at `tests/{domain}.test.ts`:
+   ```typescript
+   import { describe, it } from "node:test";
+   import assert from "node:assert/strict";
+   import { computeMerkleRoot } from "../src/{domain}/index.js";
+
+   describe("computeMerkleRoot", () => {
+     it("computes root for two leaves", () => {
+       assert.equal(computeMerkleRoot([...]), "0x...");
+     });
+   });
+   ```
+   - All tests must be **deterministic** — no RPC calls, no network, no randomness
+   - Use `node:test` (`describe`/`it`) and `node:assert/strict`
+
+5. **Verify**: `pnpm --filter @openscan/utils typecheck && pnpm --filter @openscan/utils test`
 
 ## network-connectors
 
