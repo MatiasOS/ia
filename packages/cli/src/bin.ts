@@ -8,6 +8,7 @@ import { addressTypeCommand } from "./commands/util/addressType.js";
 import { decodeInputCommand } from "./commands/util/decodeInput.js";
 import { balanceCommand } from "./commands/util/balance.js";
 import { formatOutput } from "./output/formatters.js";
+import { resolveRpcUrls } from "./rpc/resolve.js";
 import type { CommandContext, OutputFormat } from "./types.js";
 
 // Initialize command registry
@@ -43,7 +44,11 @@ const main = defineCommand({
     },
     rpc: {
       type: "string",
-      description: "RPC URL(s), comma-separated",
+      description: "RPC URL(s), comma-separated (auto-resolved from public RPCs if omitted)",
+    },
+    "alchemy-key": {
+      type: "string",
+      description: "Alchemy API key (or set ALCHEMY_API_KEY env var)",
     },
     output: {
       type: "string",
@@ -81,14 +86,20 @@ const main = defineCommand({
       process.exit(1);
     }
 
-    if (!args.rpc) {
-      console.error("Error: --rpc flag is required");
+    const chainId = Number.isNaN(Number(args.chain)) ? args.chain : Number(args.chain);
+    const alchemyKey = args["alchemy-key"] || process.env.ALCHEMY_API_KEY;
+
+    let rpcUrls: string[];
+    try {
+      rpcUrls = resolveRpcUrls({ chainId, rpcFlag: args.rpc, alchemyKey });
+    } catch (err) {
+      console.error(`Error: ${(err as Error).message}`);
       process.exit(1);
     }
 
     const ctx: CommandContext = {
-      chainId: Number.isNaN(Number(args.chain)) ? args.chain : Number(args.chain),
-      rpcUrls: args.rpc.split(",").map((u: string) => u.trim()),
+      chainId,
+      rpcUrls,
       outputFormat: args.output as OutputFormat,
       strategyType: args.strategy as "fallback" | "parallel" | "race",
       verbose: args.verbose,

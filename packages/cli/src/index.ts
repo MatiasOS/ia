@@ -20,6 +20,10 @@ export {
   balanceHandler,
 } from "./handlers/index.js";
 
+// RPC resolution
+export { resolveRpcUrls, getAlchemyUrl } from "./rpc/index.js";
+export type { ResolveRpcOptions } from "./rpc/index.js";
+
 // Types
 export type {
   CommandDefinition,
