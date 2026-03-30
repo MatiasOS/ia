@@ -5,12 +5,12 @@ Markdown-based procedural knowledge files for AI agents, following the [skills.s
 ## Installation
 
 ```bash
-npx skills add openscan/blockchain-analysis
+npx skills add MatiasOS/ia --skill blockchain-exploration
 ```
 
 ## Available Skills
 
-### blockchain-analysis
+### blockchain-exploration
 
 On-chain blockchain analysis skill providing procedural knowledge for:
 

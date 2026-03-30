@@ -7,7 +7,7 @@ This package contains **no TypeScript code**. It is pure Markdown following the 
 ## Structure
 
 ```
-blockchain-analysis/
+blockchain-exploration/
 ├── SKILL.md                        # Main skill entry with YAML frontmatter
 ├── metadata.json                   # Version, organization, abstract
 ├── AGENTS.md                       # Auto-generated compiled rules
@@ -29,7 +29,7 @@ Each rule in `rules/` is a Markdown file with:
 
 ## Adding a New Skill Rule
 
-1. Create `blockchain-analysis/rules/{capability}.md` with YAML frontmatter
+1. Create `blockchain-exploration/rules/{capability}.md` with YAML frontmatter
 2. Reference it from `SKILL.md`
 3. Regenerate `AGENTS.md` if needed
 
