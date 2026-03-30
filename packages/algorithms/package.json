@@ -1,5 +1,10 @@
 {
   "name": "@openscan/algorithms",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openscan-explorer/ia.git",
+    "directory": "packages/algorithms"
+  },
   "version": "0.1.0",
   "type": "module",
   "scripts": {
