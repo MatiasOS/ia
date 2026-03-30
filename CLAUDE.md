@@ -25,7 +25,7 @@ See [ARCHITECTURE.md](ARCHITECTURE.md) for the full specification.
 | `@openscan/utils` | Zero-dep utilities: hex, units, address validation, ABI, events, signatures |
 | `@openscan/algorithms` | On-chain algorithms: tx history, token balance, gas price |
 | `@openscan/cli` | CLI tool (`openscan`) wrapping algorithms and utils |
-| `@openscan/skills` | Markdown-based procedural knowledge for AI agents (skills.sh format) |
+| `@openscan/skills` | Markdown-based procedural knowledge for AI agents (skills.sh format, in `skills/` not `packages/`) |
 | `@openscan/adapters-langchain` | LangChain tool wrappers (wraps algorithms/utils directly) |
 | `@openscan/adapters-openclaw` | OpenClaw adapter (wraps CLI handlers) |
 

@@ -171,22 +171,21 @@ ai/
 │   │   ├── package.json
 │   │   └── tsconfig.json
 │   │
-│   ├── skills/                    # @openscan/skills (markdown-based, skills.sh format)
-│   │   ├── blockchain-analysis/   # Blockchain analysis skill
-│   │   │   ├── SKILL.md           # Main skill instructions for AI agents
-│   │   │   ├── metadata.json      # Skill metadata (version, author, refs)
-│   │   │   ├── rules/             # Individual rule files
-│   │   │   │   ├── tx-history.md
-│   │   │   │   ├── token-balance.md
-│   │   │   │   ├── gas-analysis.md
-│   │   │   │   ├── address-profiling.md
-│   │   │   │   └── ...
-│   │   │   ├── scripts/           # Optional helper scripts
-│   │   │   └── AGENTS.md          # Auto-generated compiled rules
-│   │   └── README.md
-│   │
 │   ├── adapters-langchain/        # @openscan/adapters-langchain
 │   └── adapters-openclaw/         # @openscan/adapters-openclaw
+│
+├── skills/                        # @openscan/skills (markdown-based, skills.sh format)
+│   ├── blockchain-exploration/       # Blockchain analysis skill
+│   │   ├── SKILL.md               # Main skill instructions for AI agents
+│   │   ├── metadata.json          # Skill metadata (version, author, refs)
+│   │   ├── rules/                 # Individual rule files
+│   │   │   ├── tx-history.md
+│   │   │   ├── token-balance.md
+│   │   │   ├── gas-analysis.md
+│   │   │   ├── address-profiling.md
+│   │   │   └── ...
+│   │   └── AGENTS.md              # Auto-generated compiled rules
+│   └── README.md
 │
 ├── tooling/
 │   ├── tsconfig/                  # Shared TypeScript configs
@@ -469,7 +468,7 @@ Skills are **markdown-based procedural knowledge files** that instruct AI agents
 **SKILL.md** (frontmatter + instructions):
 ```markdown
 ---
-name: openscan-blockchain-analysis
+name: openscan-blockchain-exploration
 description: Procedural knowledge for on-chain blockchain analysis using the openscan CLI
 license: MIT
 metadata:
@@ -611,8 +610,8 @@ export interface OpenClawToolAdapter {
 - **Format**: Markdown-based (skills.sh / agentskills.io format)
 - **No TypeScript dependencies** — skills are `.md` files with frontmatter
 - **Prerequisite**: `@openscan/cli` must be installed (skills instruct agents to invoke CLI commands)
-- **Installation**: `npx skills add openscan/blockchain-analysis`
-- **Skills**: `blockchain-analysis` (covers tx history, gas analysis, token tracking, address profiling as rules)
+- **Installation**: `npx skills add openscan/ia --skill blockchain-exploration`
+- **Skills**: `blockchain-exploration` (covers tx history, gas analysis, token tracking, address profiling as rules)
 
 ### 8.5 Adapter Packages
 
@@ -884,7 +883,7 @@ export { handler as txHistoryHandler };
 ### 9.5 Skill Rule Example (Markdown)
 
 ```markdown
-<!-- packages/skills/blockchain-analysis/rules/address-profiling.md -->
+<!-- skills/blockchain-exploration/rules/address-profiling.md -->
 ---
 title: Address Profiling Workflow
 impact: HIGH
@@ -1107,7 +1106,7 @@ export function buildOpenClawManifest(
       { name: "gas-analysis", description: "Gas price history and trends", chains: [1, 10, 56, 137] },
       { name: "token-tracking", description: "Token balance history", chains: [1, 10, 56, 137] },
     ],
-    skills: [{ name: "blockchain-analysis", description: "On-chain analysis skill", skillPath: "./skills/blockchain-analysis/SKILL.md" }],
+    skills: [{ name: "blockchain-exploration", description: "On-chain analysis skill", skillPath: "./skills/blockchain-exploration/SKILL.md" }],
     tools: commands.map(c => ({
       name: c.name,
       schema: { /* auto-generated from command args/flags */ },
@@ -1122,7 +1121,7 @@ export function buildOpenClawManifest(
 ## 12. Publishing Flow
 
 ### Step 1: Skill Creation
-Write SKILL.md with frontmatter + rules in `packages/skills/blockchain-analysis/`.
+Write SKILL.md with frontmatter + rules in `skills/blockchain-exploration/`.
 Each rule is a separate `.md` file in `rules/` describing how to use a specific CLI command.
 
 ### Step 2: Compile AGENTS.md
@@ -1144,14 +1143,14 @@ pnpm changeset publish
 ### Step 5: Skills.sh Registration
 Skills are published as a GitHub repository. Users install via:
 ```bash
-npx skills add openscan/blockchain-analysis
+npx skills add MatiasOS/ia --skill blockchain-exploration
 ```
 This copies the SKILL.md and rules/ into the user's project, making the procedural knowledge available to their AI agent (Claude Code, Cursor, etc.). The skill appears on the skills.sh leaderboard automatically once users start installing it.
 
 ### Step 6: ClawHub Registration
 ```bash
 # ClawHub manifest (assumed format)
-openscan publish:clawhub blockchain-analysis \
+openscan publish:clawhub blockchain-exploration \
   --registry https://clawhub.ai \
   --capabilities "transaction-analysis,address-profiling,balance-tracking" \
   --version 1.0.0
@@ -1207,10 +1206,10 @@ Build manifest via `buildOpenClawManifest()` and register with OpenClaw runtime.
 ### Phase 2: Skills (Week 5)
 
 5. **Week 5**: `@openscan/skills`
-   - Write SKILL.md with frontmatter for `blockchain-analysis`
+   - Write SKILL.md with frontmatter for `blockchain-exploration`
    - Individual rule files: tx-history, gas-analysis, token-balance, address-profiling
    - metadata.json and build script for AGENTS.md compilation
-   - README with installation instructions (`npx skills add openscan/blockchain-analysis`)
+   - README with installation instructions (`npx skills add MatiasOS/ia --skill blockchain-exploration`)
 
 ### Phase 3: Framework Adapters (Week 6)
 
@@ -1279,9 +1278,9 @@ pnpm typecheck
 - `packages/cli/src/bin.ts` — CLI entry
 - `packages/cli/src/registry.ts` — command registry
 - `packages/cli/src/handlers/index.ts` — programmatic handler exports
-- `packages/skills/blockchain-analysis/SKILL.md` — main skill instructions
-- `packages/skills/blockchain-analysis/metadata.json` — skill metadata
-- `packages/skills/blockchain-analysis/rules/*.md` — individual rule files
+- `skills/blockchain-exploration/SKILL.md` — main skill instructions
+- `skills/blockchain-exploration/metadata.json` — skill metadata
+- `skills/blockchain-exploration/rules/*.md` — individual rule files
 - `packages/adapters-langchain/src/index.ts` — LangChain adapter
 - `packages/adapters-openclaw/src/index.ts` — OpenClaw adapter
 

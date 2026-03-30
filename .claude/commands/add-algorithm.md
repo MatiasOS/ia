@@ -29,4 +29,4 @@ Create a new algorithm in `@openscan/algorithms` following the established patte
 6. Remind the user they likely also want to:
    - Add a CLI command (use /add-cli-command)
    - Add a LangChain tool (use /add-langchain-tool)
-   - Add a skill rule in `packages/skills/blockchain-analysis/rules/`
+   - Add a skill rule in `skills/blockchain-exploration/rules/`

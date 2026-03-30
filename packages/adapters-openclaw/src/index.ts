@@ -38,9 +38,9 @@ export function buildOpenClawManifest(commands: CommandDefinition[]): OpenClawMa
     ],
     skills: [
       {
-        name: "blockchain-analysis",
+        name: "blockchain-exploration",
         description: "On-chain analysis skill",
-        skillPath: "./skills/blockchain-analysis/SKILL.md",
+        skillPath: "./skills/blockchain-exploration/SKILL.md",
       },
     ],
     tools: commands.map((c) => ({
