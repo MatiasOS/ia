@@ -10,26 +10,27 @@ To build a comprehensive profile of a blockchain address, run these commands in 
 
 **Step 1 — Detect address type:**
 ```bash
-openscan util:address-type 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> --output json
+openscan util:address-type 0x<ADDRESS> --chain <CHAIN_ID> --output json
 ```
 This returns whether the address is an EOA, contract, or proxy.
 
 **Step 2 — Get native balance:**
 ```bash
-openscan util:balance 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> --output json
+openscan util:balance 0x<ADDRESS> --chain <CHAIN_ID> --output json
 ```
 
 **Step 3 — Get recent transaction history:**
 ```bash
-openscan algo:tx-history 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> \
-  --page-size 50 --output json
+openscan algo:tx-history 0x<ADDRESS> --chain <CHAIN_ID> --page-size 50 --output json
 ```
 
 **Step 4 — (If contract) Decode recent transactions:**
 ```bash
-openscan algo:tx-history 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> \
+openscan algo:tx-history 0x<ADDRESS> --chain <CHAIN_ID> \
   --output json | openscan util:decode-input --abi <ABI_PATH>
 ```
+
+> **Tip:** All commands auto-resolve public RPCs. Add `--alchemy-key YOUR_KEY` for premium reliability, or `--rpc <URL>` for a specific endpoint.
 
 **Combining results:** Aggregate the JSON outputs from steps 1-3 to present a
 unified address profile with type, balance, and activity summary.

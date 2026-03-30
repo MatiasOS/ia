@@ -40,10 +40,13 @@ All commands accept these flags:
 | Flag | Description | Required |
 |------|-------------|----------|
 | `--chain <id>` | EVM chain ID (default: 1) | No |
-| `--rpc <url>` | RPC endpoint URL(s), comma-separated | Yes |
+| `--rpc <url>` | RPC endpoint URL(s), comma-separated | No |
+| `--alchemy-key <key>` | Alchemy API key (or set `ALCHEMY_API_KEY` env var) | No |
 | `--output <format>` | Output format: json, table, stream (default: json) | No |
 | `--strategy <type>` | RPC strategy: fallback, parallel, race (default: fallback) | No |
 | `--verbose` | Enable verbose output | No |
+
+> **RPC Resolution**: If `--rpc` is omitted, public RPCs are auto-loaded from `@openscan/metadata` for the given chain. Providing `--alchemy-key` adds a premium Alchemy endpoint as the primary fallback. Both flags are optional.
 
 ## Supported Networks
 
