@@ -49,10 +49,7 @@ describe("decodeTxInput", () => {
     assert.equal(result.methodName, "transfer");
     assert.equal(result.params.length, 2);
     assert.equal(result.params[0]!.name, "to");
-    assert.equal(
-      result.params[0]!.value,
-      "0xd8da6bf26964af9d7eed9e03e53415d37aa96045",
-    );
+    assert.equal(result.params[0]!.value, "0xd8da6bf26964af9d7eed9e03e53415d37aa96045");
     assert.equal(result.params[1]!.value, "1000000000000000000");
   });
 

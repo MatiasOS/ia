@@ -26,20 +26,14 @@ describe("validateAddress — EVM valid", () => {
   });
 
   it("validates with explicit chainType evm", () => {
-    const result = validateAddress(
-      "0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359",
-      "evm",
-    );
+    const result = validateAddress("0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359", "evm");
     assert.equal(result.isValid, true);
     assert.equal(result.chainType, "evm");
   });
 
   it("returns checksummed address (lowercase placeholder)", () => {
     const result = validateAddress("0xDE709F2102306220921060314715629080E2FB77");
-    assert.equal(
-      result.checksummed,
-      "0xde709f2102306220921060314715629080e2fb77",
-    );
+    assert.equal(result.checksummed, "0xde709f2102306220921060314715629080e2fb77");
   });
 
   it("sets type to unknown for pure validation", () => {

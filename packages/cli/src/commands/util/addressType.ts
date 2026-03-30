@@ -21,10 +21,7 @@ const handler: CommandHandler = async (args, ctx) => {
         type: ctx.strategyType as "fallback" | "parallel" | "race",
         rpcUrls: ctx.rpcUrls,
       };
-      const client = nc.ClientFactory.createClient(
-        ctx.chainId as SupportedNetwork,
-        config,
-      );
+      const client = nc.ClientFactory.createClient(ctx.chainId as SupportedNetwork, config);
       try {
         const fullInfo = await detectAddressType(address, client);
         return { exitCode: 0, data: fullInfo };
@@ -42,9 +39,7 @@ const handler: CommandHandler = async (args, ctx) => {
 export const addressTypeCommand: CommandDefinition = {
   name: "util:address-type",
   description: "Detect address type (EOA/contract)",
-  args: [
-    { name: "address", description: "Address to check", required: true, type: "string" },
-  ],
+  args: [{ name: "address", description: "Address to check", required: true, type: "string" }],
   flags: [],
   handler,
 };

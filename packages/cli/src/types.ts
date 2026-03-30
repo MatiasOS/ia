@@ -49,9 +49,5 @@ export interface CommandRegistry {
   register(command: CommandDefinition): void;
   get(name: string): CommandDefinition | undefined;
   list(): CommandDefinition[];
-  execute(
-    name: string,
-    args: Record<string, unknown>,
-    ctx: CommandContext,
-  ): Promise<CommandResult>;
+  execute(name: string, args: Record<string, unknown>, ctx: CommandContext): Promise<CommandResult>;
 }

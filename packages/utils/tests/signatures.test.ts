@@ -28,61 +28,37 @@ describe("parseSignature", () => {
   });
 
   it("parses v=28 (0x1c)", () => {
-    const sig =
-      "0x" +
-      "a".repeat(64) +
-      "b".repeat(64) +
-      "1c";
+    const sig = "0x" + "a".repeat(64) + "b".repeat(64) + "1c";
     const result = parseSignature(sig);
     assert.equal(result.v, 28);
   });
 
   it("parses v=0 (0x00)", () => {
-    const sig =
-      "0x" +
-      "a".repeat(64) +
-      "b".repeat(64) +
-      "00";
+    const sig = "0x" + "a".repeat(64) + "b".repeat(64) + "00";
     const result = parseSignature(sig);
     assert.equal(result.v, 0);
   });
 
   it("parses v=1 (0x01)", () => {
-    const sig =
-      "0x" +
-      "a".repeat(64) +
-      "b".repeat(64) +
-      "01";
+    const sig = "0x" + "a".repeat(64) + "b".repeat(64) + "01";
     const result = parseSignature(sig);
     assert.equal(result.v, 1);
   });
 
   it("throws for too short signature", () => {
-    assert.throws(
-      () => parseSignature("0xdeadbeef"),
-      /Invalid signature length/,
-    );
+    assert.throws(() => parseSignature("0xdeadbeef"), /Invalid signature length/);
   });
 
   it("throws for too long signature", () => {
-    assert.throws(
-      () => parseSignature("0x" + "ab".repeat(66)),
-      /Invalid signature length/,
-    );
+    assert.throws(() => parseSignature("0x" + "ab".repeat(66)), /Invalid signature length/);
   });
 
   it("throws for empty input", () => {
-    assert.throws(
-      () => parseSignature(""),
-      /Invalid signature length/,
-    );
+    assert.throws(() => parseSignature(""), /Invalid signature length/);
   });
 
   it("throws for just 0x prefix", () => {
-    assert.throws(
-      () => parseSignature("0x"),
-      /Invalid signature length/,
-    );
+    assert.throws(() => parseSignature("0x"), /Invalid signature length/);
   });
 });
 
@@ -101,7 +77,9 @@ describe("formatSignature", () => {
     const result = formatSignature("0xff", "0x" + "bb".repeat(32), 0);
     // r should be padded to 64 chars
     assert.equal(result.length, 2 + 130); // 0x + 64 + 64 + 2
-    assert.ok(result.startsWith("0x00000000000000000000000000000000000000000000000000000000000000ff"));
+    assert.ok(
+      result.startsWith("0x00000000000000000000000000000000000000000000000000000000000000ff"),
+    );
   });
 
   it("pads short s value", () => {

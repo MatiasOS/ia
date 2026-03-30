@@ -18,13 +18,14 @@ mock.module("@openscan/network-connectors", {
 });
 
 // Import after mock is registered
-const { GasPriceHistoryAlgorithm } = await import(
-  "../src/gas-price/GasPriceHistoryAlgorithm.js"
-);
+const { GasPriceHistoryAlgorithm } = await import("../src/gas-price/GasPriceHistoryAlgorithm.js");
 
 // --- Helpers ---
 
-function blockHeader(blockNumber: number, opts?: { baseFee?: string; gasUsed?: number; gasLimit?: number; timestamp?: number }) {
+function blockHeader(
+  blockNumber: number,
+  opts?: { baseFee?: string; gasUsed?: number; gasLimit?: number; timestamp?: number },
+) {
   const baseFee = opts?.baseFee ?? "0x3b9aca00"; // 1 gwei
   const gasUsed = opts?.gasUsed ?? 15_000_000;
   const gasLimit = opts?.gasLimit ?? 30_000_000;
@@ -38,7 +39,10 @@ function blockHeader(blockNumber: number, opts?: { baseFee?: string; gasUsed?: n
   };
 }
 
-function setupMockRpc(currentBlock: number, blockHeaders?: Map<number, ReturnType<typeof blockHeader>>) {
+function setupMockRpc(
+  currentBlock: number,
+  blockHeaders?: Map<number, ReturnType<typeof blockHeader>>,
+) {
   mockExecute.mock.mockImplementation(async (method: unknown, params: unknown) => {
     if (method === "eth_blockNumber") {
       return { success: true, data: `0x${currentBlock.toString(16)}` };
@@ -193,7 +197,15 @@ describe("GasPriceHistoryAlgorithm", () => {
   describe("block data mapping", () => {
     it("maps block header fields to GasPriceEntry", async () => {
       const headers = new Map([
-        [99, blockHeader(99, { baseFee: "0x3b9aca00", gasUsed: 15_000_000, gasLimit: 30_000_000, timestamp: 1_700_000_099 })],
+        [
+          99,
+          blockHeader(99, {
+            baseFee: "0x3b9aca00",
+            gasUsed: 15_000_000,
+            gasLimit: 30_000_000,
+            timestamp: 1_700_000_099,
+          }),
+        ],
       ]);
       setupMockRpc(100, headers);
 
@@ -224,9 +236,7 @@ describe("GasPriceHistoryAlgorithm", () => {
     });
 
     it("handles gasUsedRatio of 0 when gasLimit is 0", async () => {
-      const headers = new Map([
-        [99, blockHeader(99, { gasUsed: 0, gasLimit: 0 })],
-      ]);
+      const headers = new Map([[99, blockHeader(99, { gasUsed: 0, gasLimit: 0 })]]);
       setupMockRpc(100, headers);
 
       const algo = new GasPriceHistoryAlgorithm();

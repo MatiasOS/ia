@@ -25,7 +25,12 @@ export const gasPriceCommand: CommandDefinition = {
   args: [],
   flags: [
     { name: "target-block", description: "Block number to sample back to", type: "number" },
-    { name: "granularity", description: "Data granularity: block, hour, day", type: "string", default: "block" },
+    {
+      name: "granularity",
+      description: "Data granularity: block, hour, day",
+      type: "string",
+      default: "block",
+    },
   ],
   handler,
 };

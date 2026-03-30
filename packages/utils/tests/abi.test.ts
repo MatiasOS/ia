@@ -8,10 +8,7 @@ import { functionSelector } from "../src/abi/index.js";
 
 describe("functionSelector (placeholder)", () => {
   it("throws with expected message", () => {
-    assert.throws(
-      () => functionSelector("transfer(address,uint256)"),
-      /keccak256/,
-    );
+    assert.throws(() => functionSelector("transfer(address,uint256)"), /keccak256/);
   });
 });
 
@@ -64,9 +61,7 @@ describe("decodeABI", () => {
       type: "function",
       inputs: [{ name: "approved", type: "bool" }],
     };
-    const data =
-      "0x12345678" +
-      "0000000000000000000000000000000000000000000000000000000000000001";
+    const data = "0x12345678" + "0000000000000000000000000000000000000000000000000000000000000001";
 
     const params = decodeABI(abi, data);
     assert.equal(params[0]!.value, true);
@@ -78,9 +73,7 @@ describe("decodeABI", () => {
       type: "function",
       inputs: [{ name: "approved", type: "bool" }],
     };
-    const data =
-      "0x12345678" +
-      "0000000000000000000000000000000000000000000000000000000000000000";
+    const data = "0x12345678" + "0000000000000000000000000000000000000000000000000000000000000000";
 
     const params = decodeABI(abi, data);
     assert.equal(params[0]!.value, false);
@@ -115,9 +108,7 @@ describe("decodeABI", () => {
       type: "function",
       inputs: [{ name: "data", type: "bytes32" }],
     };
-    const data =
-      "0x12345678" +
-      "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
+    const data = "0x12345678" + "deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef";
 
     const params = decodeABI(abi, data);
     assert.equal(
@@ -132,9 +123,7 @@ describe("decodeABI", () => {
       type: "function",
       inputs: [{ name: "amount", type: "int256" }],
     };
-    const data =
-      "0x12345678" +
-      "000000000000000000000000000000000000000000000000000000000000000a";
+    const data = "0x12345678" + "000000000000000000000000000000000000000000000000000000000000000a";
 
     const params = decodeABI(abi, data);
     assert.equal(params[0]!.value, "10");

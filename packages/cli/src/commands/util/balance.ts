@@ -25,10 +25,7 @@ const handler: CommandHandler = async (args, ctx) => {
     type: ctx.strategyType as "fallback" | "parallel" | "race",
     rpcUrls: ctx.rpcUrls,
   };
-  const client = nc.ClientFactory.createClient(
-    ctx.chainId as SupportedNetwork,
-    config,
-  );
+  const client = nc.ClientFactory.createClient(ctx.chainId as SupportedNetwork, config);
 
   try {
     const result = await client.execute<string>("eth_getBalance", [address, "latest"]);
@@ -63,9 +60,7 @@ const handler: CommandHandler = async (args, ctx) => {
 export const balanceCommand: CommandDefinition = {
   name: "util:balance",
   description: "Get native token balance for an address",
-  args: [
-    { name: "address", description: "Address to check", required: true, type: "string" },
-  ],
+  args: [{ name: "address", description: "Address to check", required: true, type: "string" }],
   flags: [],
   handler,
 };

@@ -42,10 +42,7 @@ export class TokenBalanceHistoryAlgorithm
       type: (params.strategyType ?? "fallback") as "fallback" | "parallel" | "race",
       rpcUrls: params.rpcUrls,
     };
-    const client = nc.ClientFactory.createClient(
-      params.chainId as SupportedNetwork,
-      config,
-    );
+    const client = nc.ClientFactory.createClient(params.chainId as SupportedNetwork, config);
 
     try {
       const paddedAddress = `0x${params.address.slice(2).toLowerCase().padStart(64, "0")}`;

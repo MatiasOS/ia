@@ -35,10 +35,7 @@ export class GasPriceHistoryAlgorithm implements Algorithm<GasPriceParams, GasPr
       type: (params.strategyType ?? "fallback") as "fallback" | "parallel" | "race",
       rpcUrls: params.rpcUrls,
     };
-    const client = nc.ClientFactory.createClient(
-      params.chainId as SupportedNetwork,
-      config,
-    );
+    const client = nc.ClientFactory.createClient(params.chainId as SupportedNetwork, config);
 
     try {
       // 1. Get current block number
@@ -84,10 +81,10 @@ export class GasPriceHistoryAlgorithm implements Algorithm<GasPriceParams, GasPr
       const entries: GasPriceEntry[] = [];
 
       for (const blockNum of sampleBlocks) {
-        const blockResult = await client.execute<BlockHeader>(
-          "eth_getBlockByNumber",
-          [`0x${blockNum.toString(16)}`, false],
-        );
+        const blockResult = await client.execute<BlockHeader>("eth_getBlockByNumber", [
+          `0x${blockNum.toString(16)}`,
+          false,
+        ]);
         rpcCalls++;
 
         if (!blockResult.success || !blockResult.data) {

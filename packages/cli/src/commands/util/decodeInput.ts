@@ -20,11 +20,14 @@ export const decodeInputCommand: CommandDefinition = {
   name: "util:decode-input",
   description: "Decode transaction input data",
   args: [
-    { name: "data", description: "Hex-encoded transaction input data", required: true, type: "string" },
+    {
+      name: "data",
+      description: "Hex-encoded transaction input data",
+      required: true,
+      type: "string",
+    },
   ],
-  flags: [
-    { name: "abi", description: "Path to ABI JSON file", type: "string" },
-  ],
+  flags: [{ name: "abi", description: "Path to ABI JSON file", type: "string" }],
   handler,
 };
 

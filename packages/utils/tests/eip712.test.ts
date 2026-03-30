@@ -73,11 +73,7 @@ describe("hashTypedData (placeholder)", () => {
   it("throws with expected message", () => {
     assert.throws(
       () =>
-        hashTypedData(
-          { name: "Test" },
-          { Foo: [{ name: "bar", type: "uint256" }] },
-          { bar: 42 },
-        ),
+        hashTypedData({ name: "Test" }, { Foo: [{ name: "bar", type: "uint256" }] }, { bar: 42 }),
       /keccak256/,
     );
   });

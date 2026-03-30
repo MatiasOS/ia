@@ -29,9 +29,7 @@ describe("hexToNumber", () => {
   it("converts max uint256", () => {
     const maxUint256 = 2n ** 256n - 1n;
     assert.equal(
-      hexToNumber(
-        "0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
-      ),
+      hexToNumber("0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"),
       maxUint256,
     );
   });

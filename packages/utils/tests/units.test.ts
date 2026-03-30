@@ -31,10 +31,7 @@ describe("formatUnits", () => {
   });
 
   it("formats large number preserving precision (viem)", () => {
-    assert.equal(
-      formatUnits(6942069420123456789123450000n, 18),
-      "6942069420.12345678912345",
-    );
+    assert.equal(formatUnits(6942069420123456789123450000n, 18), "6942069420.12345678912345");
   });
 
   it("omits decimal point when clean (viem)", () => {
@@ -96,10 +93,7 @@ describe("parseUnits", () => {
   });
 
   it("truncates excess precision (viem)", () => {
-    assert.equal(
-      parseUnits("1.123456789012345678999", 18),
-      1123456789012345678n,
-    );
+    assert.equal(parseUnits("1.123456789012345678999", 18), 1123456789012345678n);
   });
 
   it("parses 0.1 with 1 decimal", () => {

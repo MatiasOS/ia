@@ -26,9 +26,7 @@ const handler: CommandHandler = async (args, ctx) => {
 export const txHistoryCommand: CommandDefinition = {
   name: "algo:tx-history",
   description: "Get transaction history for an address",
-  args: [
-    { name: "address", description: "Target address", required: true, type: "string" },
-  ],
+  args: [{ name: "address", description: "Target address", required: true, type: "string" }],
   flags: [
     { name: "from-block", description: "Start block", type: "string" },
     { name: "to-block", description: "End block", type: "string" },

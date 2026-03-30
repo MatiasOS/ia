@@ -6,8 +6,7 @@ import type { AbiEvent } from "../src/abi/index.js";
 
 // ERC-20 Transfer event: Transfer(address indexed from, address indexed to, uint256 value)
 // Topic0 = keccak256("Transfer(address,address,uint256)")
-const TRANSFER_TOPIC =
-  "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
+const TRANSFER_TOPIC = "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef";
 
 const transferEventAbi: AbiEvent & { selector: string } = {
   name: "Transfer",
@@ -57,11 +56,7 @@ describe("decodeEventLog", () => {
     const fromAddress = "0x000000000000000000000000aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
     const toAddress = "0x000000000000000000000000bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
     const log: LogEntry = {
-      topics: [
-        TRANSFER_TOPIC,
-        fromAddress,
-        toAddress,
-      ],
+      topics: [TRANSFER_TOPIC, fromAddress, toAddress],
       data: "0x0000000000000000000000000000000000000000000000000de0b6b3a7640000",
     };
 
@@ -105,9 +100,7 @@ describe("decodeEventLog", () => {
     const boolEventAbi: AbiEvent & { selector: string } = {
       name: "StatusChanged",
       type: "event",
-      inputs: [
-        { name: "active", type: "bool", indexed: true },
-      ],
+      inputs: [{ name: "active", type: "bool", indexed: true }],
       selector: "0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890",
     };
 
@@ -129,9 +122,7 @@ describe("decodeEventLog", () => {
     const indexedUintAbi: AbiEvent & { selector: string } = {
       name: "ValueSet",
       type: "event",
-      inputs: [
-        { name: "id", type: "uint256", indexed: true },
-      ],
+      inputs: [{ name: "id", type: "uint256", indexed: true }],
       selector: "0x1111111111111111111111111111111111111111111111111111111111111111",
     };
 
@@ -179,9 +170,7 @@ describe("decodeEventLog", () => {
     };
 
     const log: LogEntry = {
-      topics: [
-        "0x2222222222222222222222222222222222222222222222222222222222222222",
-      ],
+      topics: ["0x2222222222222222222222222222222222222222222222222222222222222222"],
       data:
         "0x" +
         "000000000000000000000000cccccccccccccccccccccccccccccccccccccccc" +

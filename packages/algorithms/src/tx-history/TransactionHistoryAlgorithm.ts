@@ -58,10 +58,7 @@ function toHex(n: number): string {
   return `0x${n.toString(16)}`;
 }
 
-async function batchExecute<T>(
-  tasks: Array<() => Promise<T>>,
-  batchSize: number,
-): Promise<T[]> {
+async function batchExecute<T>(tasks: Array<() => Promise<T>>, batchSize: number): Promise<T[]> {
   const results: T[] = [];
   for (let i = 0; i < tasks.length; i += batchSize) {
     const batch = tasks.slice(i, i + batchSize);
@@ -71,9 +68,7 @@ async function batchExecute<T>(
   return results;
 }
 
-export class TransactionHistoryAlgorithm
-  implements Algorithm<TxHistoryParams, TxHistoryPage>
-{
+export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, TxHistoryPage> {
   readonly name = "tx-history";
   readonly description =
     "Retrieve transaction history for an address via binary search on state changes";
@@ -106,10 +101,7 @@ export class TransactionHistoryAlgorithm
     const cached = this.nonceCache.get(key);
     if (cached !== undefined) return cached;
     const client = this.client!;
-    const result = await client.execute<string>("eth_getTransactionCount", [
-      address,
-      toHex(block),
-    ]);
+    const result = await client.execute<string>("eth_getTransactionCount", [address, toHex(block)]);
     this.rpcCalls++;
     const nonce = Number(hexToNumber(result.data || "0x0"));
     this.nonceCache.set(key, nonce);
@@ -121,10 +113,7 @@ export class TransactionHistoryAlgorithm
     const cached = this.balanceCache.get(key);
     if (cached !== undefined) return cached;
     const client = this.client!;
-    const result = await client.execute<string>("eth_getBalance", [
-      address,
-      toHex(block),
-    ]);
+    const result = await client.execute<string>("eth_getBalance", [address, toHex(block)]);
     this.rpcCalls++;
     const balance = BigInt(result.data || "0x0");
     this.balanceCache.set(key, balance);
@@ -322,12 +311,26 @@ export class TransactionHistoryAlgorithm
 
       if (rightChanged) {
         await this.findActivityBlocks(
-          address, midBlock, endBlock, midState, endState, maxBlocks, foundBlocks, signal,
+          address,
+          midBlock,
+          endBlock,
+          midState,
+          endState,
+          maxBlocks,
+          foundBlocks,
+          signal,
         );
       }
       if (leftChanged && foundBlocks.size < maxBlocks) {
         await this.findActivityBlocks(
-          address, startBlock, midBlock, startState, midState, maxBlocks, foundBlocks, signal,
+          address,
+          startBlock,
+          midBlock,
+          startState,
+          midState,
+          maxBlocks,
+          foundBlocks,
+          signal,
         );
       }
       return;
@@ -350,12 +353,18 @@ export class TransactionHistoryAlgorithm
       if (!segStartState || !segEndState) continue;
 
       const hasChanges =
-        segStartState.nonce !== segEndState.nonce ||
-        segStartState.balance !== segEndState.balance;
+        segStartState.nonce !== segEndState.nonce || segStartState.balance !== segEndState.balance;
 
       if (hasChanges) {
         await this.findActivityBlocks(
-          address, segStart, segEnd, segStartState, segEndState, maxBlocks, foundBlocks, signal,
+          address,
+          segStart,
+          segEnd,
+          segStartState,
+          segEndState,
+          maxBlocks,
+          foundBlocks,
+          signal,
         );
       }
     }
@@ -363,16 +372,13 @@ export class TransactionHistoryAlgorithm
 
   // -- Block transaction fetching --
 
-  private async fetchBlockReceipts(
-    blockNum: number,
-  ): Promise<Map<string, EthTransactionReceipt>> {
+  private async fetchBlockReceipts(blockNum: number): Promise<Map<string, EthTransactionReceipt>> {
     const client = this.client!;
     const receipts = new Map<string, EthTransactionReceipt>();
     try {
-      const result = await client.execute<EthTransactionReceipt[]>(
-        "eth_getBlockReceipts",
-        [toHex(blockNum)],
-      );
+      const result = await client.execute<EthTransactionReceipt[]>("eth_getBlockReceipts", [
+        toHex(blockNum),
+      ]);
       this.rpcCalls++;
       if (result.data && Array.isArray(result.data)) {
         for (const receipt of result.data) {
@@ -394,10 +400,9 @@ export class TransactionHistoryAlgorithm
     const client = this.client!;
     const receipts = new Map<string, EthTransactionReceipt>();
     const tasks = hashes.map((hash) => async () => {
-      const result = await client.execute<EthTransactionReceipt>(
-        "eth_getTransactionReceipt",
-        [hash],
-      );
+      const result = await client.execute<EthTransactionReceipt>("eth_getTransactionReceipt", [
+        hash,
+      ]);
       this.rpcCalls++;
       if (result.data) receipts.set(hash.toLowerCase(), result.data);
     });
@@ -561,8 +566,13 @@ export class TransactionHistoryAlgorithm
         blocks: [],
         entries: [],
         stats: {
-          totalBlocks: 0, totalTxs: 0, sentCount: 0, receivedCount: 0,
-          internalCount: 0, rpcCalls: this.rpcCalls, elapsedMs: 0,
+          totalBlocks: 0,
+          totalTxs: 0,
+          sentCount: 0,
+          receivedCount: 0,
+          internalCount: 0,
+          rpcCalls: this.rpcCalls,
+          elapsedMs: 0,
         },
       };
     }
@@ -575,7 +585,9 @@ export class TransactionHistoryAlgorithm
       fromBlock = optFromBlock;
     } else {
       onProgress?.({
-        phase: "searching", current: 0, total: 0,
+        phase: "searching",
+        current: 0,
+        total: 0,
         message: "Finding activity range...",
       });
       const range = await this.findRecentActivityRange(normalizedAddress, toBlock, signal);
@@ -584,8 +596,12 @@ export class TransactionHistoryAlgorithm
           blocks: [],
           entries: [],
           stats: {
-            totalBlocks: 0, totalTxs: 0, sentCount: 0, receivedCount: 0,
-            internalCount: 0, rpcCalls: this.rpcCalls,
+            totalBlocks: 0,
+            totalTxs: 0,
+            sentCount: 0,
+            receivedCount: 0,
+            internalCount: 0,
+            rpcCalls: this.rpcCalls,
             elapsedMs: performance.now() - searchStart,
           },
         };
@@ -595,7 +611,9 @@ export class TransactionHistoryAlgorithm
     }
 
     onProgress?.({
-      phase: "searching", current: 0, total: 0,
+      phase: "searching",
+      current: 0,
+      total: 0,
       message: "Binary searching for transaction blocks...",
       blockRange: { from: fromBlock, to: toBlock },
     });
@@ -610,8 +628,12 @@ export class TransactionHistoryAlgorithm
         blocks: [],
         entries: [],
         stats: {
-          totalBlocks: 0, totalTxs: 0, sentCount: 0, receivedCount: 0,
-          internalCount: 0, rpcCalls: this.rpcCalls,
+          totalBlocks: 0,
+          totalTxs: 0,
+          sentCount: 0,
+          receivedCount: 0,
+          internalCount: 0,
+          rpcCalls: this.rpcCalls,
           elapsedMs: performance.now() - searchStart,
         },
       };
@@ -620,9 +642,14 @@ export class TransactionHistoryAlgorithm
     // Find blocks with activity
     const foundBlocks = new Set<number>();
     await this.findActivityBlocks(
-      normalizedAddress, fromBlock, toBlock, startState, endState,
+      normalizedAddress,
+      fromBlock,
+      toBlock,
+      startState,
+      endState,
       limit > 0 ? limit + 1 : Number.MAX_SAFE_INTEGER,
-      foundBlocks, signal,
+      foundBlocks,
+      signal,
     );
 
     const sortedBlocks = Array.from(foundBlocks).sort((a, b) => b - a);
@@ -630,7 +657,9 @@ export class TransactionHistoryAlgorithm
 
     // Fetch transactions
     onProgress?.({
-      phase: "fetching", current: 0, total: blocksToFetch.length,
+      phase: "fetching",
+      current: 0,
+      total: blocksToFetch.length,
       message: `Fetching transactions from ${blocksToFetch.length} blocks...`,
     });
 
@@ -652,7 +681,9 @@ export class TransactionHistoryAlgorithm
         onTransactionsFound?.(batchEntries);
       }
       onProgress?.({
-        phase: "fetching", current: fetched, total: blocksToFetch.length,
+        phase: "fetching",
+        current: fetched,
+        total: blocksToFetch.length,
         message: `Fetching transactions (${fetched}/${blocksToFetch.length})...`,
       });
     }
@@ -688,10 +719,7 @@ export class TransactionHistoryAlgorithm
       type: (params.strategyType ?? "fallback") as "fallback" | "parallel" | "race",
       rpcUrls: params.rpcUrls,
     };
-    const client = nc.ClientFactory.createClient(
-      params.chainId as SupportedNetwork,
-      config,
-    );
+    const client = nc.ClientFactory.createClient(params.chainId as SupportedNetwork, config);
     this.initClient(client as unknown as RpcClient);
 
     try {
@@ -701,31 +729,28 @@ export class TransactionHistoryAlgorithm
           params.pagination?.fromBlock !== undefined
             ? Number(params.pagination.fromBlock)
             : undefined,
-        toBlock:
-          params.pagination?.cursor
-            ? Number(params.pagination.cursor)
-            : params.pagination?.toBlock !== undefined
-              ? Number(params.pagination.toBlock)
-              : undefined,
+        toBlock: params.pagination?.cursor
+          ? Number(params.pagination.cursor)
+          : params.pagination?.toBlock !== undefined
+            ? Number(params.pagination.toBlock)
+            : undefined,
       });
 
       // Get latest block for archivalRequired calculation
       const latestResult = await client.execute<string>("eth_blockNumber", []);
-      const latestBlock = latestResult.data
-        ? Number(hexToNumber(latestResult.data))
-        : 0;
+      const latestBlock = latestResult.data ? Number(hexToNumber(latestResult.data)) : 0;
 
       const lowestBlock = result.blocks[result.blocks.length - 1];
       const hasMore = result.blocks.length > (params.pagination?.pageSize ?? 100);
       const pageEntries = hasMore
         ? result.entries.slice(0, params.pagination?.pageSize ?? 100)
         : result.entries;
-      const nextCursor =
-        hasMore && lowestBlock !== undefined ? String(lowestBlock - 1) : undefined;
+      const nextCursor = hasMore && lowestBlock !== undefined ? String(lowestBlock - 1) : undefined;
 
-      const fromBlock = result.blocks.length > 0
-        ? result.blocks[result.blocks.length - 1] as number
-        : latestBlock;
+      const fromBlock =
+        result.blocks.length > 0
+          ? (result.blocks[result.blocks.length - 1] as number)
+          : latestBlock;
 
       return {
         success: true,
