@@ -1,5 +1,6 @@
 import type { CommandDefinition } from "@openscan/cli";
 import type { CommandResult } from "@openscan/cli";
+import { resolveRpcUrls } from "@openscan/cli";
 import type { OpenClawManifest } from "./types.js";
 
 export type {
@@ -13,9 +14,7 @@ export type {
 /**
  * Build an OpenClaw manifest from registered CLI commands.
  */
-export function buildOpenClawManifest(
-  commands: CommandDefinition[],
-): OpenClawManifest {
+export function buildOpenClawManifest(commands: CommandDefinition[]): OpenClawManifest {
   return {
     name: "@openscan/blockchain-toolkit",
     version: "0.1.0",
@@ -47,14 +46,22 @@ export function buildOpenClawManifest(
     tools: commands.map((c) => ({
       name: c.name,
       schema: buildSchemaFromCommand(c),
-      execute: (params: Record<string, unknown>): Promise<CommandResult> =>
-        c.handler(params, {
+      execute: (params: Record<string, unknown>): Promise<CommandResult> => {
+        const chainId = (params.chainId as number) ?? 1;
+        const rpcUrls = (params.rpcUrls as string[] | undefined)?.length
+          ? (params.rpcUrls as string[])
+          : resolveRpcUrls({
+              chainId,
+              alchemyKey: (params.alchemyKey as string) ?? process.env.ALCHEMY_API_KEY,
+            });
+        return c.handler(params, {
           outputFormat: "json",
-          chainId: (params.chainId as number) ?? 1,
-          rpcUrls: (params.rpcUrls as string[]) ?? [],
+          chainId,
+          rpcUrls,
           strategyType: "fallback",
           verbose: false,
-        }),
+        });
+      },
     })),
   };
 }
@@ -75,6 +82,15 @@ function buildSchemaFromCommand(command: CommandDefinition): Record<string, unkn
       ...(flag.default !== undefined ? { default: flag.default } : {}),
     };
   }
+
+  properties.rpcUrls = {
+    type: "array",
+    description: "RPC endpoint URLs (auto-resolved from public RPCs if omitted)",
+  };
+  properties.alchemyKey = {
+    type: "string",
+    description: "Alchemy API key for premium RPC access (optional)",
+  };
 
   return {
     type: "object",
