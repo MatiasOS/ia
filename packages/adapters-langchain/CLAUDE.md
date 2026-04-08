@@ -127,3 +127,20 @@ export const getFoo = tool(
    ```
 
 3. **Verify**: `pnpm --filter @openscan/adapters-langchain typecheck`
+
+## Demo Scripts
+
+The `scripts/` directory contains per-tool demo scripts that exercise each LangChain tool via a Groq-hosted LLM agent. Each script loads all tools but uses a prompt that targets a specific one.
+
+- **Run**: `npx tsx scripts/{name}.ts` (from the package directory)
+- **Env**: Requires `.env` with `API_KEY` (Groq API key)
+- **Pattern**: All scripts share the same structure — create agent with all tools, invoke with a tool-specific prompt, log the result.
+
+| Script | Target Tool | Prompt |
+|--------|-------------|--------|
+| `gasPrice.ts` | `getGasPriceHistory` | Gas prices on Ethereum Mainnet |
+| `txHistory.ts` | `getTransactionHistory` | Recent transactions for an address |
+| `addressType.ts` | `getAddressType` | Identify address type (EOA vs contract) |
+| `tokenBalance.ts` | `getTokenBalanceHistory` | Token balance history for an address |
+
+When adding a new tool, add a corresponding demo script following the same pattern.
