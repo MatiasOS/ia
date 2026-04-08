@@ -6,32 +6,9 @@
     "directory": "packages/adapters-openclaw"
   },
   "version": "0.0.1-alpha",
-  "type": "module",
-  "scripts": {
-    "build": "tsc -p tsconfig.json",
-    "test": "tsx --test tests/**/*.test.ts",
-    "typecheck": "tsc --noEmit"
-  },
+  "private": true,
+  "description": "OpenClaw/ClawHub skill for on-chain blockchain analysis via @openscan/cli",
   "dependencies": {
     "@openscan/cli": "workspace:*"
-  },
-  "devDependencies": {
-    "@openscan/tsconfig": "workspace:*",
-    "@openscan/network-connectors": "^1.7.0",
-    "@types/node": "^24.10.0",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
-  },
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
-  "files": ["dist"],
-  "publishConfig": {
-    "access": "public"
   }
 }
