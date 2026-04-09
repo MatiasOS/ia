@@ -23,7 +23,7 @@ blockchain-exploration/
 Each rule in `rules/` is a Markdown file with:
 - YAML frontmatter: `title`, `impact` (HIGH/MEDIUM/LOW), `tags`
 - Markdown body: when to use, bash command examples, important notes
-- References `@openscan/cli` commands by name (e.g., `openscan algo:tx-history`)
+- References `@openscan/cli` commands by name (e.g., `openscan tx-history`)
 - `--rpc` is **optional** in examples — public RPCs are auto-resolved from `@openscan/metadata`
 - Show simplest usage first (no `--rpc`), then `--alchemy-key`, then explicit `--rpc` as advanced
 
@@ -60,7 +60,7 @@ To create an entirely new skill (not just a rule within an existing skill):
 
    | Command | Description | Impact |
    |---------|-------------|--------|
-   | `openscan namespace:name` | What it does | HIGH/MEDIUM/LOW |
+   | `openscan command-name` | What it does | HIGH/MEDIUM/LOW |
 
    ## Global Flags
 
@@ -121,17 +121,17 @@ To create an entirely new skill (not just a rule within an existing skill):
 
    **Basic usage (public RPCs auto-resolved):**
    ```bash
-   openscan namespace:command 0xADDRESS --chain 1
+   openscan command-name 0xADDRESS --chain 1
    ```
 
    **With Alchemy for reliability:**
    ```bash
-   openscan namespace:command 0xADDRESS --chain 1 --alchemy-key YOUR_KEY
+   openscan command-name 0xADDRESS --chain 1 --alchemy-key YOUR_KEY
    ```
 
    **With explicit RPC:**
    ```bash
-   openscan namespace:command 0xADDRESS --chain 1 --rpc https://eth.llamarpc.com --output json
+   openscan command-name 0xADDRESS --chain 1 --rpc https://eth.llamarpc.com --output json
    ```
 
    **Important notes:**
@@ -139,7 +139,7 @@ To create an entirely new skill (not just a rule within an existing skill):
    ```
 
    - Show examples in order: basic (no `--rpc`) → `--alchemy-key` → explicit `--rpc`
-   - Reference commands by full name (e.g., `openscan algo:tx-history`)
+   - Reference commands by full name (e.g., `openscan tx-history`)
    - `--rpc` is always optional — public RPCs are auto-resolved from `@openscan/metadata`
 
 2. **Reference the rule from `SKILL.md`** — add it to the Available Commands table

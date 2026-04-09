@@ -30,7 +30,7 @@ Create a new skill in `skills/` following the skills.sh Markdown format.
 5. Add at least one rule file `skills/$SKILL_NAME/rules/{capability}.md`:
    - YAML frontmatter: `title`, `impact` (HIGH/MEDIUM/LOW), `tags`
    - Show command examples in order: basic (no --rpc) → --alchemy-key → explicit --rpc
-   - Reference CLI commands by full name (e.g., `openscan algo:tx-history`)
+   - Reference CLI commands by full name (e.g., `openscan tx-history`)
 
 6. Create `skills/$SKILL_NAME/AGENTS.md` — compiled summary with one-line entry per rule:
    ```

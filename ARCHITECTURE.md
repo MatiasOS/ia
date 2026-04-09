@@ -89,7 +89,7 @@ sequenceDiagram
     participant Utils
     participant RPC as network-connectors
 
-    Caller->>CLI: invoke("algo:tx-history", {address, chain, ...})
+    Caller->>CLI: invoke("tx-history", {address, chain, ...})
     CLI->>CLI: parseArgs + validate
     CLI->>Algo: getTransactionHistory(params)
     Algo->>RPC: client.blockNumber()
@@ -408,7 +408,7 @@ export function hashTypedData(domain: EIP712Domain, types: EIP712Types, value: R
 // packages/cli/src/types.ts
 
 export interface CommandDefinition {
-  name: string;                    // e.g., "algo:tx-history"
+  name: string;                    // e.g., "tx-history"
   description: string;
   args: ArgDefinition[];
   flags: FlagDefinition[];
@@ -495,12 +495,12 @@ The `openscan` CLI must be installed: `npm install -g @openscan/cli`
 
 | Command | Description | Impact |
 |---------|-------------|--------|
-| `openscan algo:tx-history` | Transaction history for an address | HIGH |
-| `openscan algo:gas-price` | Gas price history for a network | MEDIUM |
-| `openscan algo:token-balance` | Token balance history | HIGH |
-| `openscan util:address-type` | Detect address type (EOA/contract) | LOW |
-| `openscan util:decode-input` | Decode transaction input data | MEDIUM |
-| `openscan util:balance` | Get native token balance | LOW |
+| `openscan tx-history` | Transaction history for an address | HIGH |
+| `openscan gas-price` | Gas price history for a network | MEDIUM |
+| `openscan token-balance` | Token balance history | HIGH |
+| `openscan address-type` | Detect address type (EOA/contract) | LOW |
+| `openscan decode-input` | Decode transaction input data | MEDIUM |
+| `openscan balance` | Get native token balance | LOW |
 
 ## Rules
 
@@ -530,17 +530,17 @@ tags: transactions, history, address, on-chain
 
 ## Transaction History Retrieval
 
-Use `openscan algo:tx-history` to retrieve on-chain transaction history for an address.
+Use `openscan tx-history` to retrieve on-chain transaction history for an address.
 
 **Basic usage:**
 ```bash
-openscan algo:tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
+openscan tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
   --chain 1 --rpc https://eth.llamarpc.com --output json
 ```
 
 **With pagination:**
 ```bash
-openscan algo:tx-history 0x... --chain 1 --rpc https://... \
+openscan tx-history 0x... --chain 1 --rpc https://... \
   --from-block 19000000 --to-block 19100000 --page-size 50
 ```
 
@@ -863,7 +863,7 @@ const handler: CommandHandler = async (args, ctx) => {
 };
 
 export const txHistoryCommand: CommandDefinition = {
-  name: "algo:tx-history",
+  name: "tx-history",
   description: "Get transaction history for an address",
   args: [
     { name: "address", description: "Target address", required: true, type: "string" },
@@ -896,25 +896,25 @@ To build a comprehensive profile of a blockchain address, run these commands in 
 
 **Step 1 — Detect address type:**
 ` ``bash
-openscan util:address-type 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> --output json
+openscan address-type 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> --output json
 ` ``
 This returns whether the address is an EOA, contract, or proxy.
 
 **Step 2 — Get native balance:**
 ` ``bash
-openscan util:balance 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> --output json
+openscan balance 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> --output json
 ` ``
 
 **Step 3 — Get recent transaction history:**
 ` ``bash
-openscan algo:tx-history 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> \
+openscan tx-history 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> \
   --page-size 50 --output json
 ` ``
 
 **Step 4 — (If contract) Decode recent transactions:**
 ` ``bash
-openscan algo:tx-history 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> \
-  --output json | openscan util:decode-input --abi <ABI_PATH>
+openscan tx-history 0x<ADDRESS> --chain <CHAIN_ID> --rpc <RPC_URL> \
+  --output json | openscan decode-input --abi <ABI_PATH>
 ` ``
 
 **Combining results:** Aggregate the JSON outputs from steps 1-3 to present a
@@ -1041,20 +1041,20 @@ const executor = new AgentExecutor({ agent, tools });
 
 ```bash
 # Transaction history
-openscan algo:tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
+openscan tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
   --chain 1 --rpc https://eth.llamarpc.com --output json
 
 # Gas price history
-openscan algo:gas-price --chain 1 --page-size 50 --output table
+openscan gas-price --chain 1 --page-size 50 --output table
 
 # Utility: address type detection
-openscan util:address-type 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain 1
+openscan address-type 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain 1
 
 # Utility: decode tx input
-openscan util:decode-input 0x... --abi ./MyContract.json
+openscan decode-input 0x... --abi ./MyContract.json
 
 # Pipe JSON output
-openscan algo:tx-history 0x... --output json | jq '.entries[0]'
+openscan tx-history 0x... --output json | jq '.entries[0]'
 ```
 
 ---
@@ -1258,7 +1258,7 @@ pnpm --filter @openscan/utils test
 pnpm --filter @openscan/algorithms test
 
 # CLI end-to-end
-openscan algo:tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain 1 --output json
+openscan tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain 1 --output json
 
 # Type check all packages
 pnpm typecheck

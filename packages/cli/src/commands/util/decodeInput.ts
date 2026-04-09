@@ -17,7 +17,7 @@ const handler: CommandHandler = async (args) => {
 };
 
 export const decodeInputCommand: CommandDefinition = {
-  name: "util:decode-input",
+  name: "decode-input",
   description: "Decode transaction input data",
   args: [
     {

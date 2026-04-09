@@ -29,7 +29,7 @@ const main = defineCommand({
   args: {
     command: {
       type: "positional",
-      description: "Command to execute (e.g., algo:tx-history, util:balance)",
+      description: "Command to execute (e.g., tx-history, balance)",
       required: true,
     },
     args: {
@@ -125,7 +125,7 @@ const main = defineCommand({
     if (args.granularity) commandArgs.granularity = args.granularity;
 
     // For commands that take data as first arg
-    if (commandName === "util:decode-input" && args.args) {
+    if (commandName === "decode-input" && args.args) {
       commandArgs.data = args.args;
     }
 

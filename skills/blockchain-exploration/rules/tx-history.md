@@ -6,34 +6,34 @@ tags: transactions, history, address, on-chain
 
 ## Transaction History Retrieval
 
-Use `openscan algo:tx-history` to retrieve on-chain transaction history for an address.
+Use `openscan tx-history` to retrieve on-chain transaction history for an address.
 
 **Basic usage (public RPCs auto-resolved):**
 ```bash
-openscan algo:tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain 1
+openscan tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 --chain 1
 ```
 
 **With Alchemy for reliability:**
 ```bash
-openscan algo:tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
+openscan tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
   --chain 1 --alchemy-key YOUR_KEY
 ```
 
 **With explicit RPC:**
 ```bash
-openscan algo:tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
+openscan tx-history 0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045 \
   --chain 1 --rpc https://eth.llamarpc.com --output json
 ```
 
 **With pagination:**
 ```bash
-openscan algo:tx-history 0x... --chain 1 \
+openscan tx-history 0x... --chain 1 \
   --from-block 19000000 --to-block 19100000 --page-size 50
 ```
 
 **Human-readable output:**
 ```bash
-openscan algo:tx-history 0x... --chain 1 --output table
+openscan tx-history 0x... --chain 1 --output table
 ```
 
 **Important notes:**

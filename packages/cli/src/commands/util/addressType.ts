@@ -37,7 +37,7 @@ const handler: CommandHandler = async (args, ctx) => {
 };
 
 export const addressTypeCommand: CommandDefinition = {
-  name: "util:address-type",
+  name: "address-type",
   description: "Detect address type (EOA/contract)",
   args: [{ name: "address", description: "Address to check", required: true, type: "string" }],
   flags: [],

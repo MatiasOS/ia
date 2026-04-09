@@ -25,7 +25,7 @@ const handler: CommandHandler = async (args, ctx) => {
 };
 
 export const tokenBalanceCommand: CommandDefinition = {
-  name: "algo:token-balance",
+  name: "token-balance",
   description: "Track ERC-20 token balance history for an address",
   args: [{ name: "address", description: "Target address", required: true, type: "string" }],
   flags: [

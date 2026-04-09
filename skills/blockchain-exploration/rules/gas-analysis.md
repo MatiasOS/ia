@@ -6,31 +6,31 @@ tags: gas, fees, network, analysis
 
 ## Gas Price History Analysis
 
-Use `openscan algo:gas-price` to retrieve gas price history for a network using `eth_feeHistory`.
+Use `openscan gas-price` to retrieve gas price history for a network using `eth_feeHistory`.
 
 **Basic usage (public RPCs auto-resolved):**
 ```bash
-openscan algo:gas-price --chain 1
+openscan gas-price --chain 1
 ```
 
 **With Alchemy for reliability:**
 ```bash
-openscan algo:gas-price --chain 1 --alchemy-key YOUR_KEY --output json
+openscan gas-price --chain 1 --alchemy-key YOUR_KEY --output json
 ```
 
 **With explicit RPC:**
 ```bash
-openscan algo:gas-price --chain 1 --rpc https://eth.llamarpc.com --output json
+openscan gas-price --chain 1 --rpc https://eth.llamarpc.com --output json
 ```
 
 **Custom block count:**
 ```bash
-openscan algo:gas-price --chain 1 --page-size 200 --output table
+openscan gas-price --chain 1 --page-size 200 --output table
 ```
 
 **From a specific block:**
 ```bash
-openscan algo:gas-price --chain 1 --to-block 19500000 --page-size 50
+openscan gas-price --chain 1 --to-block 19500000 --page-size 50
 ```
 
 **Important notes:**

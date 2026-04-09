@@ -20,7 +20,7 @@ const handler: CommandHandler = async (args, ctx) => {
 };
 
 export const gasPriceCommand: CommandDefinition = {
-  name: "algo:gas-price",
+  name: "gas-price",
   description: "Get gas price history for a network",
   args: [],
   flags: [

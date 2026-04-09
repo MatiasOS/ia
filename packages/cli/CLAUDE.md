@@ -13,7 +13,7 @@ const handler: CommandHandler = async (args, ctx) => {
 };
 
 export const fooCommand: CommandDefinition = {
-  name: "namespace:command-name",  // e.g., "algo:gas-price", "util:address-type"
+  name: "command-name",  // e.g., "gas-price", "address-type"
   description: "...",
   args: [],
   flags: [{ name: "flag-name", description: "...", type: "string" }],
@@ -25,7 +25,7 @@ export { handler as fooHandler };
 
 ## Key Rules
 
-- **Naming**: Commands use `namespace:command-name` format. Namespaces: `algo` (wraps algorithms) and `util` (wraps utility functions).
+- **Naming**: Commands use `command-name` format (kebab-case). Files are organized under `algo/` (wraps algorithms) and `util/` (wraps utility functions) directories.
 - **citty framework**: The `bin.ts` entry point uses citty. Command definitions are adapted to citty format there.
 - **Dual entry**: `bin.ts` for CLI usage, `index.ts` for programmatic imports.
 - **Handler barrel**: All handlers are re-exported from `src/handlers/index.ts` for the OpenClaw adapter.
@@ -87,7 +87,7 @@ src/
    };
 
    export const fooCommand: CommandDefinition = {
-     name: "algo:foo",
+     name: "foo",
      description: "...",
      args: [],
      flags: [{ name: "custom-flag", description: "...", type: "string" }],
@@ -119,7 +119,7 @@ src/
    };
 
    export const barCommand: CommandDefinition = {
-     name: "util:bar",
+     name: "bar",
      description: "...",
      args: [{ name: "address", description: "...", required: true, type: "string" }],
      flags: [],

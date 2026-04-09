@@ -20,18 +20,29 @@ Comprehensive on-chain analysis skill for AI agents using the `openscan` CLI too
 
 ## Prerequisites
 
-The `openscan` CLI must be installed: `npm install -g @openscan/cli`
+Install the CLI globally and verify it is accessible:
+
+```bash
+npm install -g @openscan/cli
+openscan --version
+```
+
+If `openscan --version` fails, ensure your npm global bin directory is in `$PATH`:
+
+```bash
+export PATH="$(npm prefix -g)/bin:$PATH"
+```
 
 ## Available Commands
 
 | Command | Description | Impact |
 |---------|-------------|--------|
-| `openscan algo:tx-history` | Transaction history for an address | HIGH |
-| `openscan algo:gas-price` | Gas price history for a network | MEDIUM |
-| `openscan algo:token-balance` | Token balance history | HIGH |
-| `openscan util:address-type` | Detect address type (EOA/contract) | LOW |
-| `openscan util:decode-input` | Decode transaction input data | MEDIUM |
-| `openscan util:balance` | Get native token balance | LOW |
+| `openscan tx-history` | Transaction history for an address | HIGH |
+| `openscan gas-price` | Gas price history for a network | MEDIUM |
+| `openscan token-balance` | Token balance history | HIGH |
+| `openscan address-type` | Detect address type (EOA/contract) | LOW |
+| `openscan decode-input` | Decode transaction input data | MEDIUM |
+| `openscan balance` | Get native token balance | LOW |
 
 ## Global Flags
 
@@ -46,13 +57,21 @@ All commands accept these flags:
 | `--strategy <type>` | RPC strategy: fallback, parallel, race (default: fallback) | No |
 | `--verbose` | Enable verbose output | No |
 
-> **RPC Resolution**: If `--rpc` is omitted, public RPCs are auto-loaded from `@openscan/metadata` for the given chain. Providing `--alchemy-key` adds a premium Alchemy endpoint as the primary fallback. Both flags are optional.
+> **RPC Resolution**: If `--rpc` is omitted, public RPCs are auto-loaded from `@openscan/metadata` for the given chain. Providing `--alchemy-key` adds a premium Alchemy endpoint as the primary fallback. Both flags are optional. **For Ethereum mainnet (chain 1), public RPCs are often rate-limited; prefer `--alchemy-key` or an explicit `--rpc` for reliable results.**
 
 ## Supported Networks
 
 - Ethereum (1), Optimism (10), BSC (56), Polygon (137), Base (8453)
 - Arbitrum (42161), Avalanche (43114), Hardhat (31337)
 - BSC Testnet (97), Sepolia (11155111)
+
+## Troubleshooting
+
+| Error | Cause | Fix |
+|-------|-------|-----|
+| `openscan: command not found` | CLI not installed or not in PATH | `npm install -g @openscan/cli`, verify PATH includes `$(npm prefix -g)/bin` |
+| `Spec file not found` | Corrupted or partial installation | `npm uninstall -g @openscan/cli && npm install -g @openscan/cli` |
+| `No RPC endpoints available for chain X` | No public RPCs found and no explicit RPC provided | Add `--rpc <url>` or `--alchemy-key <key>` to the command |
 
 ## Rules
 
