@@ -8,8 +8,7 @@
       "@openscan/utils",
       "@openscan/algorithms",
       "@openscan/cli",
-      "@openscan/adapters-langchain",
-      "@openscan/adapters-openclaw"
+      "@openscan/adapters-langchain"
     ]
   ],
   "access": "public",
