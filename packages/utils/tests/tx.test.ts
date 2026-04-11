@@ -76,7 +76,7 @@ describe("decodeTxInput", () => {
   });
 
   it("returns methodId only for empty ABI array", () => {
-    const data = "0xa9059cbb" + "00".repeat(64);
+    const data = `0xa9059cbb${"00".repeat(64)}`;
     const result = decodeTxInput(data, []);
     assert.equal(result.methodId, "0xa9059cbb");
     assert.equal(result.params.length, 0);
@@ -94,7 +94,7 @@ describe("decodeTxInput", () => {
       selector: "0xa9059cbb",
     };
 
-    const data = "0xa9059cbb" + "00".repeat(64);
+    const data = `0xa9059cbb${"00".repeat(64)}`;
     const result = decodeTxInput(data, [eventAbi]);
     assert.equal(result.methodName, undefined);
   });

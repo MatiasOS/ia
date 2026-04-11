@@ -133,8 +133,9 @@ const main = defineCommand({
     const result = await registry.execute(commandName, commandArgs, ctx);
 
     if (result.data && typeof result.data === "object") {
-      const address = (commandArgs.address ??
-        (result.data as Record<string, unknown>).address) as string | undefined;
+      const address = (commandArgs.address ?? (result.data as Record<string, unknown>).address) as
+        | string
+        | undefined;
       const links = buildVerificationLinks({ chainId: ctx.chainId, address });
       if (links.length > 0) {
         (result.data as Record<string, unknown>).verificationLinks = links;

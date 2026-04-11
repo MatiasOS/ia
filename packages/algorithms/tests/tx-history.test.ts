@@ -203,7 +203,7 @@ function defaultParams(overrides?: Record<string, unknown>) {
  * Nonce goes 0→1 at txBlock. Balance stays constant at 1 ETH.
  */
 function setupSingleSentTx(currentBlock: number, txBlock: number) {
-  const txHash = "0x" + "ab".repeat(32);
+  const txHash = `0x${"ab".repeat(32)}`;
   const tx = buildTx({ hash: txHash, blockNumber: txBlock, from: TEST_ADDRESS, to: OTHER_ADDRESS });
   const receipt = buildReceipt(txHash);
 
@@ -232,7 +232,7 @@ function setupSingleSentTx(currentBlock: number, txBlock: number) {
  * Nonce stays 0. Balance goes 0→1 ETH at rxBlock.
  */
 function setupSingleReceivedTx(currentBlock: number, rxBlock: number) {
-  const txHash = "0x" + "cd".repeat(32);
+  const txHash = `0x${"cd".repeat(32)}`;
   const tx = buildTx({ hash: txHash, blockNumber: rxBlock, from: OTHER_ADDRESS, to: TEST_ADDRESS });
   const receipt = buildReceipt(txHash);
 
@@ -496,7 +496,7 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("classifies tx as 'internal' when address in tx.input", async () => {
-      const txHash = "0x" + "ee".repeat(32);
+      const txHash = `0x${"ee".repeat(32)}`;
       const strippedAddress = TEST_ADDRESS.replace("0x", "");
       const tx = buildTx({
         hash: txHash,
@@ -534,7 +534,7 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("classifies tx as 'internal' when address in receipt log topics", async () => {
-      const txHash = "0x" + "ff".repeat(32);
+      const txHash = `0x${"ff".repeat(32)}`;
       const strippedAddress = TEST_ADDRESS.replace("0x", "");
       const paddedAddress = `0x000000000000000000000000${strippedAddress}`;
       const tx = buildTx({
@@ -574,7 +574,7 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("classifies tx as 'internal' when address in receipt log data", async () => {
-      const txHash = "0x" + "dd".repeat(32);
+      const txHash = `0x${"dd".repeat(32)}`;
       const strippedAddress = TEST_ADDRESS.replace("0x", "");
       const tx = buildTx({
         hash: txHash,
@@ -613,7 +613,7 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("extracts methodId from input data >= 10 chars", async () => {
-      const txHash = "0x" + "ab".repeat(32);
+      const txHash = `0x${"ab".repeat(32)}`;
       const tx = buildTx({
         hash: txHash,
         blockNumber: 950,
@@ -668,7 +668,7 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("maps non-0x1 status to 'failure'", async () => {
-      const txHash = "0x" + "ab".repeat(32);
+      const txHash = `0x${"ab".repeat(32)}`;
       const tx = buildTx({ hash: txHash, blockNumber: 950, from: TEST_ADDRESS, to: OTHER_ADDRESS });
       const receipt = buildReceipt(txHash, { status: "0x0" });
 
@@ -697,7 +697,7 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("handles null 'to' field (contract creation)", async () => {
-      const txHash = "0x" + "ab".repeat(32);
+      const txHash = `0x${"ab".repeat(32)}`;
       const tx = buildTx({ hash: txHash, blockNumber: 950, from: TEST_ADDRESS, to: null });
       const receipt = buildReceipt(txHash);
 
@@ -746,7 +746,7 @@ describe("TransactionHistoryAlgorithm", () => {
 
   describe("receipt fetching", () => {
     it("falls back to individual receipts when eth_getBlockReceipts fails", async () => {
-      const txHash = "0x" + "ab".repeat(32);
+      const txHash = `0x${"ab".repeat(32)}`;
       const tx = buildTx({ hash: txHash, blockNumber: 950, from: TEST_ADDRESS, to: OTHER_ADDRESS });
       const receipt = buildReceipt(txHash);
 
@@ -786,8 +786,8 @@ describe("TransactionHistoryAlgorithm", () => {
 
   describe("multiple transactions", () => {
     it("finds transactions across multiple blocks", async () => {
-      const txHash1 = "0x" + "a1".repeat(32);
-      const txHash2 = "0x" + "a2".repeat(32);
+      const txHash1 = `0x${"a1".repeat(32)}`;
+      const txHash2 = `0x${"a2".repeat(32)}`;
       const tx1 = buildTx({
         hash: txHash1,
         blockNumber: 900,
@@ -833,8 +833,8 @@ describe("TransactionHistoryAlgorithm", () => {
     });
 
     it("sorts entries by blockNumber descending", async () => {
-      const txHash1 = "0x" + "a1".repeat(32);
-      const txHash2 = "0x" + "a2".repeat(32);
+      const txHash1 = `0x${"a1".repeat(32)}`;
+      const txHash2 = `0x${"a2".repeat(32)}`;
       const tx1 = buildTx({
         hash: txHash1,
         blockNumber: 900,
@@ -880,7 +880,7 @@ describe("TransactionHistoryAlgorithm", () => {
 
   describe("searchAddressActivity via initClient", () => {
     it("returns stats with correct counts", async () => {
-      const txHash = "0x" + "ab".repeat(32);
+      const txHash = `0x${"ab".repeat(32)}`;
       const tx = buildTx({ hash: txHash, blockNumber: 950, from: TEST_ADDRESS, to: OTHER_ADDRESS });
       const receipt = buildReceipt(txHash);
 
@@ -961,9 +961,9 @@ describe("TransactionHistoryAlgorithm", () => {
 
     it("respects limit option", async () => {
       // Set up 3 transactions at different blocks
-      const txHash1 = "0x" + "a1".repeat(32);
-      const txHash2 = "0x" + "a2".repeat(32);
-      const txHash3 = "0x" + "a3".repeat(32);
+      const txHash1 = `0x${"a1".repeat(32)}`;
+      const txHash2 = `0x${"a2".repeat(32)}`;
+      const txHash3 = `0x${"a3".repeat(32)}`;
       const tx1 = buildTx({
         hash: txHash1,
         blockNumber: 800,
