@@ -1,0 +1,41 @@
+{
+  "name": "@openscan/utils",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openscan-explorer/ia.git",
+    "directory": "packages/utils"
+  },
+  "version": "0.0.1-alpha",
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsx --test tests/**/*.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@openscan/tsconfig": "workspace:*",
+    "@types/node": "^24.10.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@openscan/network-connectors": "^1.7.0"
+  },
+  "peerDependenciesMeta": {
+    "@openscan/network-connectors": {
+      "optional": true
+    }
+  },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist"],
+  "publishConfig": {
+    "access": "public"
+  }
+}

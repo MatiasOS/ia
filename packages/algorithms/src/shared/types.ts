@@ -1,0 +1,137 @@
+import type { OpResult, OpError, OpMetadata } from "@openscan/utils";
+
+export type { OpResult, OpError, OpMetadata };
+
+export interface AlgorithmParams {
+  chainId: number | string;
+  rpcUrls: string[];
+  strategyType?: "fallback" | "parallel" | "race";
+}
+
+export interface PaginationParams {
+  fromBlock?: number | string;
+  toBlock?: number | string;
+  pageSize?: number;
+  cursor?: string;
+}
+
+export interface AlgorithmResult<T> extends OpResult<T> {
+  pagination?: {
+    hasMore: boolean;
+    nextCursor?: string;
+    totalBlocks?: number;
+  };
+}
+
+/** Algorithm interface contract */
+export interface Algorithm<TParams, TResult> {
+  readonly name: string;
+  readonly description: string;
+  readonly supportedChains: (number | string)[];
+  execute(params: TParams): Promise<AlgorithmResult<TResult>>;
+}
+
+/** Transaction History */
+export interface TxHistoryParams extends AlgorithmParams {
+  address: string;
+  pagination?: PaginationParams;
+}
+
+export interface TxHistoryEntry {
+  hash: string;
+  blockNumber: number;
+  timestamp: number;
+  from: string;
+  to: string | null;
+  value: string;
+  gasUsed: string;
+  gasPrice: string;
+  status: "success" | "failure";
+  type: "sent" | "received" | "internal";
+  methodId?: string;
+  decodedMethod?: string;
+}
+
+export interface TxHistoryPage {
+  entries: TxHistoryEntry[];
+  address: string;
+  chainId: number | string;
+}
+
+export interface TxSearchProgress {
+  phase: "searching" | "fetching";
+  current: number;
+  total: number;
+  message?: string;
+  blockRange?: { from: number; to: number };
+}
+
+export type TxSearchProgressCallback = (progress: TxSearchProgress) => void;
+export type TxSearchTransactionFoundCallback = (entries: TxHistoryEntry[]) => void;
+
+export interface TxSearchOptions {
+  limit?: number;
+  fromBlock?: number;
+  toBlock?: number;
+  onProgress?: TxSearchProgressCallback;
+  onTransactionsFound?: TxSearchTransactionFoundCallback;
+  signal?: AbortSignal;
+}
+
+export interface TxSearchResult {
+  blocks: number[];
+  entries: TxHistoryEntry[];
+  stats: {
+    totalBlocks: number;
+    totalTxs: number;
+    sentCount: number;
+    receivedCount: number;
+    internalCount: number;
+    rpcCalls: number;
+    elapsedMs: number;
+  };
+}
+
+/** Token Balance History */
+export interface TokenBalanceParams extends AlgorithmParams {
+  address: string;
+  tokenAddress: string;
+  pagination?: PaginationParams;
+}
+
+export interface TokenBalanceEntry {
+  blockNumber: number;
+  timestamp: number;
+  balance: string;
+  change: string;
+  txHash: string;
+}
+
+export interface TokenBalancePage {
+  entries: TokenBalanceEntry[];
+  address: string;
+  tokenAddress: string;
+  chainId: number | string;
+}
+
+/** Gas Price History */
+export interface GasPriceParams extends AlgorithmParams {
+  targetBlock?: number | string;
+  pagination?: PaginationParams;
+  granularity?: "block" | "hour" | "day";
+}
+
+export interface GasPriceEntry {
+  blockNumber: number;
+  timestamp: number;
+  baseFee: string;
+  avgGasPrice: string;
+  minGasPrice: string;
+  maxGasPrice: string;
+  gasUsedRatio: number;
+}
+
+export interface GasPricePage {
+  entries: GasPriceEntry[];
+  chainId: number | string;
+}
