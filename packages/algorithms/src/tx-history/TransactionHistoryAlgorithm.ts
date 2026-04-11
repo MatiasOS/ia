@@ -48,9 +48,8 @@ interface AddressState {
   balance: bigint;
 }
 
-// biome-ignore lint/suspicious/noExplicitAny: RPC client from dynamic peer dep import
 type RpcClient = {
-  execute: <T>(method: string, params: any[]) => Promise<{ success: boolean; data?: T | null }>;
+  execute: <T>(method: string, params: unknown[]) => Promise<{ success: boolean; data?: T | null }>;
   close: () => Promise<void>;
 };
 
@@ -94,13 +93,20 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
     this.balanceCache.clear();
   }
 
+  private getClient(): RpcClient {
+    if (!this.client) {
+      throw new Error("Client not initialized. Call initClient() or use execute().");
+    }
+    return this.client;
+  }
+
   // -- State queries --
 
   private async getNonce(address: string, block: number): Promise<number> {
     const key = `${address}:${block}`;
     const cached = this.nonceCache.get(key);
     if (cached !== undefined) return cached;
-    const client = this.client!;
+    const client = this.getClient();
     const result = await client.execute<string>("eth_getTransactionCount", [address, toHex(block)]);
     this.rpcCalls++;
     const nonce = Number(hexToNumber(result.data || "0x0"));
@@ -112,7 +118,7 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
     const key = `${address}:${block}`;
     const cached = this.balanceCache.get(key);
     if (cached !== undefined) return cached;
-    const client = this.client!;
+    const client = this.getClient();
     const result = await client.execute<string>("eth_getBalance", [address, toHex(block)]);
     this.rpcCalls++;
     const balance = BigInt(result.data || "0x0");
@@ -193,7 +199,7 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
     signal?: AbortSignal,
   ): Promise<{ fromBlock: number; toBlock: number } | null> {
     if (!latestBlock) {
-      const result = await this.client!.execute<string>("eth_blockNumber", []);
+      const result = await this.getClient().execute<string>("eth_blockNumber", []);
       this.rpcCalls++;
       if (!result.data) return null;
       latestBlock = Number(hexToNumber(result.data));
@@ -232,7 +238,7 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
   async getTransactionRange(
     address: string,
   ): Promise<{ startBlock: number; endBlock: number; totalSent: number } | null> {
-    const client = this.client!;
+    const client = this.getClient();
     const blockResult = await client.execute<string>("eth_blockNumber", []);
     this.rpcCalls++;
     if (!blockResult.data) return null;
@@ -373,7 +379,7 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
   // -- Block transaction fetching --
 
   private async fetchBlockReceipts(blockNum: number): Promise<Map<string, EthTransactionReceipt>> {
-    const client = this.client!;
+    const client = this.getClient();
     const receipts = new Map<string, EthTransactionReceipt>();
     try {
       const result = await client.execute<EthTransactionReceipt[]>("eth_getBlockReceipts", [
@@ -397,7 +403,7 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
   private async fetchIndividualReceipts(
     hashes: string[],
   ): Promise<Map<string, EthTransactionReceipt>> {
-    const client = this.client!;
+    const client = this.getClient();
     const receipts = new Map<string, EthTransactionReceipt>();
     const tasks = hashes.map((hash) => async () => {
       const result = await client.execute<EthTransactionReceipt>("eth_getTransactionReceipt", [
@@ -416,7 +422,7 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
     signal?: AbortSignal,
   ): Promise<TxHistoryEntry[]> {
     if (signal?.aborted) return [];
-    const client = this.client!;
+    const client = this.getClient();
     const blockResult = await client.execute<EthBlock>("eth_getBlockByNumber", [
       toHex(blockNum),
       true,
@@ -559,9 +565,9 @@ export class TransactionHistoryAlgorithm implements Algorithm<TxHistoryParams, T
     const normalizedAddress = address.toLowerCase();
 
     // Resolve latest block
-    const blockResult = await this.client!.execute<string>("eth_blockNumber", []);
+    const blockResult = await this.client?.execute<string>("eth_blockNumber", []);
     this.rpcCalls++;
-    if (!blockResult.data) {
+    if (!blockResult?.data) {
       return {
         blocks: [],
         entries: [],

@@ -247,7 +247,6 @@ describe("GasPriceHistoryAlgorithm", () => {
 
     it("falls back to 0x0 when baseFeePerGas is absent (pre-EIP-1559)", async () => {
       const header = blockHeader(99);
-      // biome-ignore lint/performance/noDelete: test needs to remove property
       delete (header as Record<string, unknown>).baseFeePerGas;
       const headers = new Map([[99, header]]);
       setupMockRpc(100, headers as Map<number, ReturnType<typeof blockHeader>>);
