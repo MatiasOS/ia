@@ -6,6 +6,8 @@ import {
   normalizeChainId,
   isBitcoinChain,
   isEVMChain,
+  buildVerifyUrl,
+  buildVerificationLinks,
 } from "../src/chain/index.js";
 
 describe("satoshiToBtc", () => {
@@ -135,5 +137,70 @@ describe("isBitcoinChain / isEVMChain are mutually exclusive", () => {
     const bip122 = "bip122:000000000019d6689c085ae165831e93";
     assert.equal(isBitcoinChain(bip122), true);
     assert.equal(isEVMChain(bip122), false);
+  });
+});
+
+describe("buildVerifyUrl", () => {
+  it("builds chain-only URL when no address/tx/block", () => {
+    assert.equal(buildVerifyUrl({ chainId: 1 }), "https://openscan.eth.link/#/1");
+  });
+
+  it("builds address URL", () => {
+    assert.equal(
+      buildVerifyUrl({ chainId: 1, address: "0xABC" }),
+      "https://openscan.eth.link/#/1/address/0xABC",
+    );
+  });
+
+  it("builds tx URL", () => {
+    assert.equal(
+      buildVerifyUrl({ chainId: 137, txHash: "0xTX" }),
+      "https://openscan.eth.link/#/137/tx/0xTX",
+    );
+  });
+
+  it("builds block URL", () => {
+    assert.equal(
+      buildVerifyUrl({ chainId: 8453, blockNumber: 12345 }),
+      "https://openscan.eth.link/#/8453/block/12345",
+    );
+  });
+
+  it("prioritizes txHash over address", () => {
+    assert.equal(
+      buildVerifyUrl({ chainId: 1, address: "0xABC", txHash: "0xTX" }),
+      "https://openscan.eth.link/#/1/tx/0xTX",
+    );
+  });
+
+  it("prioritizes address over blockNumber", () => {
+    assert.equal(
+      buildVerifyUrl({ chainId: 1, address: "0xABC", blockNumber: 100 }),
+      "https://openscan.eth.link/#/1/address/0xABC",
+    );
+  });
+
+  it("handles string chainId", () => {
+    assert.equal(buildVerifyUrl({ chainId: "42161" }), "https://openscan.eth.link/#/42161");
+  });
+
+  it("handles blockNumber 0", () => {
+    assert.equal(
+      buildVerifyUrl({ chainId: 1, blockNumber: 0 }),
+      "https://openscan.eth.link/#/1/block/0",
+    );
+  });
+});
+
+describe("buildVerificationLinks", () => {
+  it("returns an array with one link", () => {
+    const links = buildVerificationLinks({ chainId: 1, address: "0xABC" });
+    assert.equal(links.length, 1);
+    assert.equal(links[0], "https://openscan.eth.link/#/1/address/0xABC");
+  });
+
+  it("returns chain-only link when no specifics", () => {
+    const links = buildVerificationLinks({ chainId: 137 });
+    assert.deepEqual(links, ["https://openscan.eth.link/#/137"]);
   });
 });

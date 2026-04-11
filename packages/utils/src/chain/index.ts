@@ -43,3 +43,34 @@ export function isBitcoinChain(chainId: number | string): boolean {
 export function isEVMChain(chainId: number | string): boolean {
   return typeof chainId === "number" || !chainId.startsWith("bip122:");
 }
+
+/**
+ * Parameters for building OpenScan verification links.
+ */
+export interface VerifyLinkParams {
+  chainId: number | string;
+  address?: string;
+  txHash?: string;
+  blockNumber?: number | string;
+}
+
+const OPENSCAN_BASE = "https://openscan.eth.link/#";
+
+/**
+ * Build a single OpenScan verification URL based on available parameters.
+ * Priority: txHash > address > blockNumber > chain-only.
+ */
+export function buildVerifyUrl(params: VerifyLinkParams): string {
+  const base = `${OPENSCAN_BASE}/${params.chainId}`;
+  if (params.txHash) return `${base}/tx/${params.txHash}`;
+  if (params.address) return `${base}/address/${params.address}`;
+  if (params.blockNumber !== undefined) return `${base}/block/${params.blockNumber}`;
+  return base;
+}
+
+/**
+ * Build an array of OpenScan verification links for a result.
+ */
+export function buildVerificationLinks(params: VerifyLinkParams): string[] {
+  return [buildVerifyUrl(params)];
+}

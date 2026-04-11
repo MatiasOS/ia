@@ -56,7 +56,10 @@ export {
   normalizeChainId,
   isBitcoinChain,
   isEVMChain,
+  buildVerifyUrl,
+  buildVerificationLinks,
 } from "./chain/index.js";
+export type { VerifyLinkParams } from "./chain/index.js";
 
 // EIP-712
 export { encodeTypedData, hashTypedData } from "./eip712/index.js";

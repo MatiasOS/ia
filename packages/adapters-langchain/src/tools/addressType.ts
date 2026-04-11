@@ -3,6 +3,7 @@ import { z } from "zod";
 import { validateAddress, detectAddressType } from "@openscan/utils";
 import type { SupportedNetwork } from "@openscan/network-connectors";
 import { resolveRpcUrls } from "../rpc.js";
+import { injectVerificationLinks } from "../verify.js";
 
 export const getAddressType = tool(
   async ({ address, chainId, rpcUrls, alchemyKey }) => {
@@ -17,7 +18,7 @@ export const getAddressType = tool(
     });
     try {
       const fullInfo = await detectAddressType(address, client);
-      return JSON.stringify(fullInfo, null, 2);
+      return JSON.stringify(injectVerificationLinks(fullInfo, { chainId, address }), null, 2);
     } finally {
       await client.close();
     }

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { TokenBalanceHistoryAlgorithm } from "@openscan/algorithms";
 import { validateAddress } from "@openscan/utils";
 import { resolveRpcUrls } from "../rpc.js";
+import { injectVerificationLinks } from "../verify.js";
 
 export const getTokenBalanceHistory = tool(
   async ({ address, tokenAddress, chainId, rpcUrls, alchemyKey }) => {
@@ -23,7 +24,7 @@ export const getTokenBalanceHistory = tool(
     if (!result.success) {
       return `Error: ${result.error?.message ?? "Unknown error"}`;
     }
-    return JSON.stringify(result.data, null, 2);
+    return JSON.stringify(injectVerificationLinks(result.data, { chainId, address }), null, 2);
   },
   {
     name: "get_token_balance_history",

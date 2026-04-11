@@ -3,6 +3,7 @@ import { z } from "zod";
 import { TransactionHistoryAlgorithm } from "@openscan/algorithms";
 import { validateAddress } from "@openscan/utils";
 import { resolveRpcUrls } from "../rpc.js";
+import { injectVerificationLinks } from "../verify.js";
 
 export const getTransactionHistory = tool(
   async ({ address, chainId, rpcUrls, alchemyKey, pageSize }) => {
@@ -23,7 +24,7 @@ export const getTransactionHistory = tool(
     if (!result.success) {
       return `Error: ${result.error?.message ?? "Unknown error"}`;
     }
-    return JSON.stringify(result.data, null, 2);
+    return JSON.stringify(injectVerificationLinks(result.data, { chainId, address }), null, 2);
   },
   {
     name: "get_transaction_history",
