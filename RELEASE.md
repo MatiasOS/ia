@@ -25,9 +25,11 @@ All packages are published under the `@openscan` npm scope with public access.
 1. A developer creates a changeset describing what changed
 2. The changeset is committed and pushed as part of a PR to `main`
 3. On merge, the GitHub Actions **Release** workflow runs
-4. The [`changesets/action`](https://github.com/changesets/action) either:
-   - **Creates a "Version Packages" PR** — if there are pending changesets, it bumps versions, updates changelogs, and opens a PR titled `chore: version packages`
-   - **Publishes to npm** — if the "Version Packages" PR was just merged (no pending changesets, but versions were bumped), it publishes all updated packages with [npm provenance](https://docs.npmjs.com/generating-provenance-statements)
+4. The workflow:
+   - Applies pending changesets (bumps versions, updates changelogs, removes consumed changeset files)
+   - Builds all packages
+   - Publishes updated packages to npm with [npm provenance](https://docs.npmjs.com/generating-provenance-statements)
+   - Commits and pushes the version changes back to `main`
 
 ### Dependency Order
 
@@ -60,18 +62,9 @@ This creates a markdown file in `.changeset/`. Commit it with your PR.
 
 Push your branch and open a PR to `main`. Once merged, the Release workflow picks up the changeset.
 
-### Step 3: Merge the Version PR
+### Step 3: Automatic Version and Publish
 
-The workflow creates a PR titled **"chore: version packages"** that:
-- Consumes all pending changesets
-- Bumps `version` in each `package.json`
-- Updates `CHANGELOG.md` files
-
-Review and merge this PR.
-
-### Step 4: Automatic Publish
-
-Once the version PR merges, the Release workflow runs again and publishes all updated packages to npm.
+Once merged, the Release workflow automatically versions, builds, publishes to npm, and pushes the version changes back to `main`. No additional steps required.
 
 ## Pre-release (Alpha) Versions
 
@@ -129,7 +122,7 @@ pnpm --filter @openscan/utils exec npm publish --access public
 The release pipeline is defined in `.github/workflows/release.yml` and requires:
 
 - **`NPM_TOKEN`** — a granular access token from npmjs.com scoped to the `@openscan` org with read/write permissions. Added as a GitHub Actions secret.
-- **`GITHUB_TOKEN`** — automatically provided by GitHub Actions. Used to create the version PR.
+- **`GITHUB_TOKEN`** — automatically provided by GitHub Actions. Used to push version changes back to `main`.
 
 ### Creating an npm Token
 
